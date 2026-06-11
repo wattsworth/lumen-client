@@ -31,9 +31,10 @@ import { createSelector, select, Store } from '@ngrx/store';
 import { users_ , global_UI_} from '../../../../app/selectors';
 
 @Component({
-  selector: 'account-group',
-  templateUrl: './group.component.html',
-  styleUrls: ['./group.component.css']
+    selector: 'account-group',
+    templateUrl: './group.component.html',
+    styleUrls: ['./group.component.css'],
+    standalone: false
 })
 export class GroupComponent implements OnInit {
   @ViewChild('userModal', {static: false}) public userModal: ModalDirective;

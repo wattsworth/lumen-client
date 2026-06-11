@@ -13,10 +13,11 @@ import {
 import { CustomValidators } from 'ng2-validation';
 
 @Component({
-  selector: 'app-user-form',
-  outputs: ['save','cancel'],
-  templateUrl: './user-form.component.html',
-  styleUrls: ['./user-form.component.css']
+    selector: 'app-user-form',
+    outputs: ['save', 'cancel'],
+    templateUrl: './user-form.component.html',
+    styleUrls: ['./user-form.component.css'],
+    standalone: false
 })
 export class UserFormComponent implements OnInit {
 

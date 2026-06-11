@@ -15,10 +15,11 @@ import {
 } from '../../../store/data';
 
 @Component({
-  selector: 'account-group-form',
-  outputs: ['save', 'cancel'],
-  templateUrl: './group-form.component.html',
-  styleUrls: ['./group-form.component.css']
+    selector: 'account-group-form',
+    outputs: ['save', 'cancel'],
+    templateUrl: './group-form.component.html',
+    styleUrls: ['./group-form.component.css'],
+    standalone: false
 })
 export class GroupFormComponent implements OnInit {
   @Input() group: IUserGroup;

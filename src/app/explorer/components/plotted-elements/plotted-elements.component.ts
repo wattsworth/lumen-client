@@ -20,9 +20,10 @@ import { PlotSelectors } from '../../selectors/plot.selectors';
 declare var $: any;
 
 @Component({
-  selector: 'app-plotted-elements',
-  templateUrl: './plotted-elements.component.html',
-  styleUrls: ['./plotted-elements.component.css']
+    selector: 'app-plotted-elements',
+    templateUrl: './plotted-elements.component.html',
+    styleUrls: ['./plotted-elements.component.css'],
+    standalone: false
 })
 export class PlottedElementsComponent
   implements OnInit, OnChanges, AfterViewInit {

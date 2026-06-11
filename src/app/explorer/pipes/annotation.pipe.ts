@@ -3,8 +3,9 @@ import { IAnnotation } from '../../store/data';
 import * as _ from 'lodash-es';
 
 @Pipe({
-    name: 'annotationFilter'
-  })
+    name: 'annotationFilter',
+    standalone: false
+})
   export class AnnotationPipe implements PipeTransform {
   
     transform(list: IAnnotation[], filterText: string): IAnnotation[] {

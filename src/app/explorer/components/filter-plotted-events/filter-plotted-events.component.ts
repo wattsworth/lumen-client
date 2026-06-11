@@ -7,9 +7,10 @@ import { filter } from 'lodash';
 import * as _ from 'lodash-es';
 
 @Component({
-  selector: 'app-filter-plotted-events',
-  templateUrl: './filter-plotted-events.component.html',
-  styleUrls: ['./filter-plotted-events.component.css']
+    selector: 'app-filter-plotted-events',
+    templateUrl: './filter-plotted-events.component.html',
+    styleUrls: ['./filter-plotted-events.component.css'],
+    standalone: false
 })
 export class FilterPlottedEventsComponent implements OnInit {
   @Input() eventStream: IEventStream;

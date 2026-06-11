@@ -24,10 +24,11 @@ import { Store, select, createSelector } from '@ngrx/store';
 import { global_UI_ } from '../../../selectors';
 
 @Component({
-  selector: 'app-edit-permissions',
-  outputs: ['getTargets'],
-  templateUrl: './edit-permissions.component.html',
-  styleUrls: ['./edit-permissions.component.css']
+    selector: 'app-edit-permissions',
+    outputs: ['getTargets'],
+    templateUrl: './edit-permissions.component.html',
+    styleUrls: ['./edit-permissions.component.css'],
+    standalone: false
 })
 export class EditPermissionsComponent implements OnInit {
   @ViewChild('permissionModal', {static: false}) public permissionModal: ModalDirective;

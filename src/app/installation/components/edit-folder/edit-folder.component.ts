@@ -10,9 +10,10 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-folder',
-  templateUrl: './edit-folder.component.html',
-  styleUrls: ['./edit-folder.component.css']
+    selector: 'app-edit-folder',
+    templateUrl: './edit-folder.component.html',
+    styleUrls: ['./edit-folder.component.css'],
+    standalone: false
 })
 export class EditFolderComponent implements OnInit {
   

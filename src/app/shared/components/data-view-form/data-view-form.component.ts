@@ -10,9 +10,10 @@ import { IDataView } from '../../../store/data/'
 import { DataViewService } from '../../../services';
 
 @Component({
-  selector: 'app-data-view-form',
-  templateUrl: './data-view-form.component.html',
-  styleUrls: ['./data-view-form.component.css']
+    selector: 'app-data-view-form',
+    templateUrl: './data-view-form.component.html',
+    styleUrls: ['./data-view-form.component.css'],
+    standalone: false
 })
 export class DataViewFormComponent implements OnInit, OnChanges {
 

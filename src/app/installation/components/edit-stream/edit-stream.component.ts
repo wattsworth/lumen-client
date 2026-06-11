@@ -19,16 +19,17 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-stream',
-  templateUrl: './edit-stream.component.html',
-  animations: [
-    trigger('elementsToggled', [
-      state('true', style({ height: '*', opacity: 1 })),
-      state('false', style({ height: '0px', opacity: 0 })),
-      transition('* => *', animate('.5s ease-in'))
-    ])
-  ],
-  styleUrls: ['./edit-stream.component.css']
+    selector: 'app-edit-stream',
+    templateUrl: './edit-stream.component.html',
+    animations: [
+        trigger('elementsToggled', [
+            state('true', style({ height: '*', opacity: 1 })),
+            state('false', style({ height: '0px', opacity: 0 })),
+            transition('* => *', animate('.5s ease-in'))
+        ])
+    ],
+    styleUrls: ['./edit-stream.component.css'],
+    standalone: false
 })
 export class EditStreamComponent implements OnInit {
 

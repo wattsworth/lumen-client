@@ -8,20 +8,21 @@ import { IRange } from '../../store';
 import {BsDatepickerConfig} from 'ngx-bootstrap/datepicker';
 
 @Component({
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [   // :enter is alias to 'void => *'
-        style({ opacity: 0 }),
-        animate(500, style({ opacity: 1 }))
-      ]),
-      /*transition(':leave', [   // :leave is alias to '* => void'
-        animate(500, style({ opacity: 0 }))
-      ])*/
-    ])
-  ],
-  selector: 'app-date-picker',
-  templateUrl: './date-picker.component.html',
-  styleUrls: ['./date-picker.component.css']
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate(500, style({ opacity: 1 }))
+            ]),
+            /*transition(':leave', [   // :leave is alias to '* => void'
+              animate(500, style({ opacity: 0 }))
+            ])*/
+        ])
+    ],
+    selector: 'app-date-picker',
+    templateUrl: './date-picker.component.html',
+    styleUrls: ['./date-picker.component.css'],
+    standalone: false
 })
 export class DatePickerComponent implements OnInit, OnChanges {
   @Input() timeRange: IRange;

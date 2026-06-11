@@ -14,9 +14,10 @@ import {
 } from '../../../services';
 
 @Component({
-  selector: 'app-password-reset',
-  templateUrl: './password-reset.page.html',
-  styleUrls: ['./password-reset.page.css']
+    selector: 'app-password-reset',
+    templateUrl: './password-reset.page.html',
+    styleUrls: ['./password-reset.page.css'],
+    standalone: false
 })
 export class PasswordResetPageComponent implements OnInit {
 

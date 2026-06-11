@@ -17,9 +17,10 @@ import { InstallationSelectors } from '../../installation.selectors';
 import { permissions_, users_, userGroups_ } from '../../../selectors';
 
 @Component({
-  selector: 'installation-admin-tab',
-  templateUrl: './admin.tab.html',
-  styleUrls: ['./admin.tab.css']
+    selector: 'installation-admin-tab',
+    templateUrl: './admin.tab.html',
+    styleUrls: ['./admin.tab.css'],
+    standalone: false
 })
 export class AdminTabComponent implements OnInit {
 

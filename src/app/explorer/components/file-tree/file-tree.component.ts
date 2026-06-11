@@ -30,9 +30,10 @@ import {
 import { Dictionary } from '@ngrx/entity';
 
 @Component({
-  selector: 'app-file-tree',
-  templateUrl: './file-tree.component.html',
-  styleUrls: ['./file-tree.component.css']
+    selector: 'app-file-tree',
+    templateUrl: './file-tree.component.html',
+    styleUrls: ['./file-tree.component.css'],
+    standalone: false
 })
 
 export class FileTreeComponent implements OnInit {
@@ -173,7 +174,7 @@ export class FileTreeComponent implements OnInit {
     return appIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
-      return {
+      let node:IDbModuleNode = {
       id: 'a'+app.id,
       type: 'dataApp',
       name: app.name,
@@ -181,6 +182,7 @@ export class FileTreeComponent implements OnInit {
       children: null,
       hasChildren: false
       }
+      return node
     })
   }
 
@@ -337,3 +339,7 @@ export interface IDbElementNode
   tooltip: string;
   color: string;
 }
+export interface IDbModuleNode
+  extends DbTreeNode{
+    link: string;
+  }

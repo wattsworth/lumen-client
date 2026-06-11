@@ -176,7 +176,7 @@ export class InstallationSelectors {
       children: []
     };
   }
-
+/*
   private _mapInterfaces(modules: IDataApp[]): DbTreeNode {
     let nodes = modules.map( a => { return {
       id: 'a'+a.id,
@@ -194,5 +194,5 @@ export class InstallationSelectors {
       children: nodes,
       hasChildren: true,
     };
-  }
+  }*/
 }

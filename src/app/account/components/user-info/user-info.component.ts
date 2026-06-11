@@ -16,9 +16,10 @@ import { IUser } from '../../../store/data';
 import { AccountSelectors } from '../../account.selectors';
 
 @Component({
-  selector: 'app-user-info',
-  templateUrl: './user-info.component.html',
-  styleUrls: ['./user-info.component.css']
+    selector: 'app-user-info',
+    templateUrl: './user-info.component.html',
+    styleUrls: ['./user-info.component.css'],
+    standalone: false
 })
 export class UserInfoComponent implements OnInit, OnDestroy {
 

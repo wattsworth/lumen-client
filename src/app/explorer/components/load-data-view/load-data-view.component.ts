@@ -8,9 +8,10 @@ import {Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-load-data-view',
-  templateUrl: './load-data-view.component.html',
-  styleUrls: ['./load-data-view.component.css']
+    selector: 'app-load-data-view',
+    templateUrl: './load-data-view.component.html',
+    styleUrls: ['./load-data-view.component.css'],
+    standalone: false
 })
 export class LoadDataViewComponent implements OnInit {
 

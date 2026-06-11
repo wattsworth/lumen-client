@@ -35,23 +35,26 @@ import {
 import { MainPlotComponent } from '../../components/main-plot/main-plot.component';
 
 @Component({
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [   // :enter is alias to 'void => *'
-        style({ opacity: 0 }),
-        animate(100, style({ opacity: 1 }))
-      ]),
-      transition(':leave', [   // :leave is alias to '* => void'
-        animate(500, style({ opacity: 0 }))
-      ])]),
-    trigger('fadeOut', [
-      transition(':leave', [   // :leave is alias to '* => void'
-        animate(500, style({ opacity: 0 }))
-      ])])
-  ],
-  selector: 'app-explorer-page',
-  templateUrl: './explorer.page.html',
-  styleUrls: ['./explorer.page.css']
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate(100, style({ opacity: 1 }))
+            ]),
+            transition(':leave', [
+                animate(500, style({ opacity: 0 }))
+            ])
+        ]),
+        trigger('fadeOut', [
+            transition(':leave', [
+                animate(500, style({ opacity: 0 }))
+            ])
+        ])
+    ],
+    selector: 'app-explorer-page',
+    templateUrl: './explorer.page.html',
+    styleUrls: ['./explorer.page.css'],
+    standalone: false
 })
 export class ExplorerPageComponent implements OnInit, AfterViewInit, OnDestroy {
 

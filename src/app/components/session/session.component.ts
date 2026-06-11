@@ -4,9 +4,10 @@ import { Store, select, createSelector } from '@ngrx/store'
 import {users_} from '../../selectors';
 
 @Component({
-  selector: 'app-session',
-  templateUrl: './session.component.html',
-  styleUrls: ['./session.component.css']
+    selector: 'app-session',
+    templateUrl: './session.component.html',
+    styleUrls: ['./session.component.css'],
+    standalone: false
 })
 export class SessionComponent implements OnInit {
 

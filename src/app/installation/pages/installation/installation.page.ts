@@ -21,9 +21,10 @@ import { ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
-  selector: 'app-installation',
-  templateUrl: './installation.page.html',
-  styleUrls: ['./installation.page.css']
+    selector: 'app-installation',
+    templateUrl: './installation.page.html',
+    styleUrls: ['./installation.page.css'],
+    standalone: false
 })
 export class InstallationPageComponent implements OnInit {
 

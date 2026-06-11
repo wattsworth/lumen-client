@@ -36,10 +36,10 @@ import { IEventsSet } from 'src/app/store/data';
 declare var $: any;
 
 @Component({
-
-  selector: 'app-main-plot',
-  templateUrl: './main-plot.component.html',
-  styleUrls: ['./main-plot.component.css']
+    selector: 'app-main-plot',
+    templateUrl: './main-plot.component.html',
+    styleUrls: ['./main-plot.component.css'],
+    standalone: false
 })
 export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
 

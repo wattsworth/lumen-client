@@ -9,9 +9,10 @@ import { IDataApp } from '../../../store/data';
 
 
 @Component({
-  selector: 'app-edit-module',
-  templateUrl: './edit-module.component.html',
-  styleUrls: ['./edit-module.component.css']
+    selector: 'app-edit-module',
+    templateUrl: './edit-module.component.html',
+    styleUrls: ['./edit-module.component.css'],
+    standalone: false
 })
 export class EditModuleComponent implements OnInit {
 

@@ -14,9 +14,10 @@ import { IRange } from '../../store';
 import { PlotSelectors } from '../../selectors/plot.selectors';
 
 @Component({
-  selector: 'app-download-data',
-  templateUrl: './download-data.component.html',
-  styleUrls: ['./download-data.component.css']
+    selector: 'app-download-data',
+    templateUrl: './download-data.component.html',
+    styleUrls: ['./download-data.component.css'],
+    standalone: false
 })
 export class DownloadDataComponent implements OnInit {
 
