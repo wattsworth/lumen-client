@@ -17,9 +17,10 @@ import {
 import { AccountSelectors } from '../../account.selectors';
 import { AccountService } from '../../account.service';
 @Component({
-  selector: 'app-account',
-  templateUrl: './account.page.html',
-  styleUrls: ['./account.page.css']
+    selector: 'app-account',
+    templateUrl: './account.page.html',
+    styleUrls: ['./account.page.css'],
+    standalone: false
 })
 export class AccountPageComponent implements OnInit {
 

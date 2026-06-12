@@ -20,9 +20,10 @@ import { Dictionary } from '@ngrx/entity';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'installation-database-tab',
-  templateUrl: './database.tab.html',
-  styleUrls: ['./database.tab.css']
+    selector: 'installation-database-tab',
+    templateUrl: './database.tab.html',
+    styleUrls: ['./database.tab.css'],
+    standalone: false
 })
 export class DatabaseTabComponent {
 
@@ -137,14 +138,15 @@ export class DatabaseTabComponent {
     return moduleIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
-      return {
+      let node:IModuleNode = {
       id: 'a'+app.id,
-      dbId: app.id,
+      link: app.url,
       type: 'dataApp',
       name: app.name,
       children: [],
       hasChildren: false
       }
+      return node
     })
   }
 
@@ -252,3 +254,7 @@ export interface DbTreeNode {
   priveleged?: boolean;
   nilmId?: number;
 };
+export interface IModuleNode 
+  extends DbTreeNode{
+  link: string;
+}

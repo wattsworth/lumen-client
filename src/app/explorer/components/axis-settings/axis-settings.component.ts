@@ -4,9 +4,10 @@ import {IAxisSettings } from '../../store';
 import * as _ from 'lodash-es';
 
 @Component({
-  selector: 'app-axis-settings',
-  templateUrl: './axis-settings.component.html',
-  styleUrls: ['./axis-settings.component.css'],
+    selector: 'app-axis-settings',
+    templateUrl: './axis-settings.component.html',
+    styleUrls: ['./axis-settings.component.css'],
+    standalone: false
 })
 export class AxisSettingsComponent implements OnInit, OnDestroy{
   @Input() settings: IAxisSettings;

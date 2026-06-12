@@ -5,7 +5,8 @@ import {
   IRange
 } from '../store';
 @Pipe({
-  name: 'duration'
+    name: 'duration',
+    standalone: false
 })
 export class DurationPipe implements PipeTransform {
 

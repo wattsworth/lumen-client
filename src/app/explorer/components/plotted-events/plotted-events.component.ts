@@ -25,9 +25,10 @@ import { Dictionary } from '@ngrx/entity';
 declare var $: any;
 
 @Component({
-  selector: 'app-plotted-events',
-  templateUrl: './plotted-events.component.html',
-  styleUrls: ['./plotted-events.component.css']
+    selector: 'app-plotted-events',
+    templateUrl: './plotted-events.component.html',
+    styleUrls: ['./plotted-events.component.css'],
+    standalone: false
 })
 export class PlottedEventsComponent
   implements OnInit, AfterViewInit, OnChanges {

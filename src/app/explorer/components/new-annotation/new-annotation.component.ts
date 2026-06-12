@@ -21,9 +21,10 @@ import { IRange } from '../../../explorer/store';
 import { PlotSelectors } from '../../../explorer/selectors';
 
 @Component({
-  selector: 'app-new-annotation',
-  templateUrl: './new-annotation.component.html',
-  styleUrls: ['./new-annotation.component.css']
+    selector: 'app-new-annotation',
+    templateUrl: './new-annotation.component.html',
+    styleUrls: ['./new-annotation.component.css'],
+    standalone: false
 })
 export class NewAnnotationComponent implements OnInit {
 

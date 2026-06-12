@@ -7,9 +7,10 @@ import {
 import { UserService } from '../../../services';
 
 @Component({
-  selector: 'app-accept-invitation',
-  templateUrl: './accept-invitation.page.html',
-  styleUrls: ['./accept-invitation.page.css']
+    selector: 'app-accept-invitation',
+    templateUrl: './accept-invitation.page.html',
+    styleUrls: ['./accept-invitation.page.css'],
+    standalone: false
 })
 export class AcceptInvitationPageComponent implements OnInit {
 

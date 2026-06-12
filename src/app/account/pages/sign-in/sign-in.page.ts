@@ -15,9 +15,10 @@ import { AccountSelectors } from '../../../account/account.selectors';
 import { global_UI_ } from '../../../selectors';
 
 @Component({
-  selector: 'app-sign-in',
-  templateUrl: './sign-in.page.html',
-  styleUrls: ['./sign-in.page.css']
+    selector: 'app-sign-in',
+    templateUrl: './sign-in.page.html',
+    styleUrls: ['./sign-in.page.css'],
+    standalone: false
 })
 export class SignInPageComponent implements OnInit {
 

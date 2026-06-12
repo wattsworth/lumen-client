@@ -27,9 +27,10 @@ export const PLOT_LIVE_INTERVAL = 20 * 60 * 1000; //20 minutes
 export const PLOT_PERCENT_FUTURE = 0.1; //10% of plot is in future
 
 @Component({
-  selector: 'app-tool-tab',
-  templateUrl: './tool-tab.component.html',
-  styleUrls: ['./tool-tab.component.css']
+    selector: 'app-tool-tab',
+    templateUrl: './tool-tab.component.html',
+    styleUrls: ['./tool-tab.component.css'],
+    standalone: false
 })
 
 export class ToolTabComponent implements OnInit, OnDestroy {

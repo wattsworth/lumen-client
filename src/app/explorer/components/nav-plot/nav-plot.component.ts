@@ -25,9 +25,10 @@ import * as _ from 'lodash-es';
 
 declare var $: any;
 @Component({
-  selector: 'app-nav-plot',
-  templateUrl: './nav-plot.component.html',
-  styleUrls: ['./nav-plot.component.css']
+    selector: 'app-nav-plot',
+    templateUrl: './nav-plot.component.html',
+    styleUrls: ['./nav-plot.component.css'],
+    standalone: false
 })
 export class NavPlotComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('plotArea', {static: true}) plotArea: ElementRef

@@ -12,9 +12,10 @@ import {
 import {AccountSelectors} from '../../account.selectors';
 
 @Component({
-  selector: 'app-account-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.css']
+    selector: 'app-account-groups',
+    templateUrl: './groups.component.html',
+    styleUrls: ['./groups.component.css'],
+    standalone: false
 })
 export class GroupsComponent implements OnInit {
   @ViewChild('newGroupModal', { static: false }) public newGroupModal: ModalDirective;

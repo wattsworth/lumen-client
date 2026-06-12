@@ -18,9 +18,10 @@ import {
 import { AccountSelectors } from '../../account.selectors';
 
 @Component({
-  selector: 'app-account-nilms',
-  templateUrl: './nilms.component.html',
-  styleUrls: ['./nilms.component.css']
+    selector: 'app-account-nilms',
+    templateUrl: './nilms.component.html',
+    styleUrls: ['./nilms.component.css'],
+    standalone: false
 })
 export class NilmsComponent implements OnInit {
   @ViewChild('nilmModal', {static: false}) public nilmModal: ModalDirective;

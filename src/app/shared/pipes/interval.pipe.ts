@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'interval'
+    name: 'interval',
+    standalone: false
 })
 export class IntervalPipe implements PipeTransform {
 

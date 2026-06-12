@@ -22,9 +22,10 @@ import { DataService } from "../../../services";
 import { IData } from "../../../store/data";
 
 @Component({
-  selector: 'app-measurement-results',
-  templateUrl: './measurement-results.component.html',
-  styleUrls: ['./measurement-results.component.css']
+    selector: 'app-measurement-results',
+    templateUrl: './measurement-results.component.html',
+    styleUrls: ['./measurement-results.component.css'],
+    standalone: false
 })
 export class MeasurementResultsComponent implements OnInit, OnDestroy {
 

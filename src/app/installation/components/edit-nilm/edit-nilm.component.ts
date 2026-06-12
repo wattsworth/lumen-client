@@ -24,9 +24,10 @@ import {
 import {InstallationService} from '../../installation.service';
 
 @Component({
-  selector: 'app-edit-nilm',
-  templateUrl: './edit-nilm.component.html',
-  styleUrls: ['./edit-nilm.component.css']
+    selector: 'app-edit-nilm',
+    templateUrl: './edit-nilm.component.html',
+    styleUrls: ['./edit-nilm.component.css'],
+    standalone: false
 })
 
 export class EditNilmComponent implements OnInit {

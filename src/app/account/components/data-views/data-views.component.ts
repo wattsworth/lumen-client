@@ -14,9 +14,10 @@ import { Store, createSelector, select } from '@ngrx/store';
 import { dataViews_ } from '../../../selectors';
 
 @Component({
-  selector: 'app-data-views',
-  templateUrl: './data-views.component.html',
-  styleUrls: ['./data-views.component.css']
+    selector: 'app-data-views',
+    templateUrl: './data-views.component.html',
+    styleUrls: ['./data-views.component.css'],
+    standalone: false
 })
 export class DataViewsComponent{
   @ViewChild('editDataViewModal', {static: false}) public editViewModal: ModalDirective;

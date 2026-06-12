@@ -30,9 +30,10 @@ import {
 import { Dictionary } from '@ngrx/entity';
 
 @Component({
-  selector: 'app-file-tree',
-  templateUrl: './file-tree.component.html',
-  styleUrls: ['./file-tree.component.css']
+    selector: 'app-file-tree',
+    templateUrl: './file-tree.component.html',
+    styleUrls: ['./file-tree.component.css'],
+    standalone: false
 })
 
 export class FileTreeComponent implements OnInit {
@@ -169,11 +170,11 @@ export class FileTreeComponent implements OnInit {
   mapJouleModules(
     appIds: Array<number>,
     dataApps: Dictionary<IDataApp>
-  ): DbTreeNode[]{
+  ): IModuleNode[]{
     return appIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
-      return {
+      let node:IModuleNode = {
       id: 'a'+app.id,
       type: 'dataApp',
       name: app.name,
@@ -181,6 +182,7 @@ export class FileTreeComponent implements OnInit {
       children: null,
       hasChildren: false
       }
+      return node;
     })
   }
 
@@ -322,6 +324,10 @@ export interface DbTreeNode {
   priveleged?: boolean;
   nilmId?: number;
 };
+export interface IModuleNode 
+  extends DbTreeNode{
+  link: string;
+}
 export interface IEventStreamNode 
   extends DbTreeNode{
   stream: IEventStream;

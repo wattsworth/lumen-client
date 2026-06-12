@@ -6,10 +6,11 @@ import {
 
 
 @Component({
-  selector: 'app-permission',
-  outputs: ['remove'],
-  templateUrl: './permission.component.html',
-  styleUrls: ['./permission.component.css']
+    selector: 'app-permission',
+    outputs: ['remove'],
+    templateUrl: './permission.component.html',
+    styleUrls: ['./permission.component.css'],
+    standalone: false
 })
 
 export class PermissionComponent implements OnInit {
