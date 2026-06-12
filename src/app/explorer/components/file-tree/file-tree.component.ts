@@ -174,11 +174,7 @@ export class FileTreeComponent implements OnInit {
     return appIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
-<<<<<<< HEAD
-      let node:IDbModuleNode = {
-=======
       let node:IModuleNode = {
->>>>>>> angular-upgrade
       id: 'a'+app.id,
       type: 'dataApp',
       name: app.name,
@@ -186,11 +182,7 @@ export class FileTreeComponent implements OnInit {
       children: null,
       hasChildren: false
       }
-<<<<<<< HEAD
-      return node
-=======
       return node;
->>>>>>> angular-upgrade
     })
   }
 

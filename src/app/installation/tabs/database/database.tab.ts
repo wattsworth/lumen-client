@@ -139,11 +139,7 @@ export class DatabaseTabComponent {
     return moduleIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
-<<<<<<< HEAD
-      let node:IDbModuleNode = {
-=======
       let node:IModuleNode = {
->>>>>>> angular-upgrade
       id: 'a'+app.id,
       link: app.url,
       type: 'dataApp',
@@ -151,11 +147,7 @@ export class DatabaseTabComponent {
       children: [],
       hasChildren: false
       }
-<<<<<<< HEAD
-      return node;
-=======
       return node
->>>>>>> angular-upgrade
     })
   }
 
