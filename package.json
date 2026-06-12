@@ -47,7 +47,7 @@
     "@angular-devkit/core": "^19.2.27",
     "@angular/cli": "~19.2.27",
     "@angular/compiler-cli": "^19.2.25",
-    "@fortawesome/angular-fontawesome": "0.15.0",
+    "@fortawesome/angular-fontawesome": "1.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
