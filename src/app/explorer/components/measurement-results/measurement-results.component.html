@@ -4,27 +4,46 @@
   <thead>
     <tr>
       <th>Element</th>
-      <th><span *ngIf="measurementSelectors.relative$ | async">Δ </span>Mean</th>
-      <th><span *ngIf="measurementSelectors.relative$ | async">Δ </span>Min</th>
-      <th><span *ngIf="measurementSelectors.relative$ | async">Δ </span>Max</th>
+      <th>@if (measurementSelectors.relative$ | async) {
+        <span>Δ </span>
+      }Mean</th>
+      <th>@if (measurementSelectors.relative$ | async) {
+        <span>Δ </span>
+      }Min</th>
+      <th>@if (measurementSelectors.relative$ | async) {
+        <span>Δ </span>
+      }Max</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let m of displayedMeasurements$ | async">
-      <td>
-        <span class="element-color float-left" [style.background]="m.color"></span>
-        {{m.name}}
-      </td>
-      <td><span *ngIf="m.valid; else empty">
-        {{m.mean | number: '1.2-2'}}</span></td>
-      <td><span *ngIf="m.valid; else empty">
-        {{m.min | number: '1.2-2'}}</span></td>
-      <td><span *ngIf="m.valid; else empty">
-        {{m.max | number: '1.2-2'}}</span></td>
-    </tr>
+    @for (m of displayedMeasurements$ | async; track m) {
+      <tr>
+        <td>
+          <span class="element-color float-left" [style.background]="m.color"></span>
+          {{m.name}}
+        </td>
+        <td>@if (m.valid) {
+          <span>
+          {{m.mean | number: '1.2-2'}}</span>
+        } @else {
+          &mdash;
+        }</td>
+        <td>@if (m.valid) {
+          <span>
+          {{m.min | number: '1.2-2'}}</span>
+        } @else {
+          &mdash;
+        }</td>
+        <td>@if (m.valid) {
+          <span>
+          {{m.max | number: '1.2-2'}}</span>
+        } @else {
+          &mdash;
+        }</td>
+      </tr>
+    }
   </tbody>
 </table>
-<ng-template #empty>&mdash;</ng-template>
 <h6>Time Range (UNIX Microseconds):</h6>
 <code>
   {{ measurementSelectors.measurementRangeString$ | async }}
@@ -32,20 +51,22 @@
 
 <div class="clearfix">
   <!-- checkbox for relative measurements -->
-  <div class="checkbox float-left" 
-    *ngIf="(measurementSelectors.zeroRange$ | async) != null">
-    <label>
-    <input type="checkbox"
-        [checked]="measurementSelectors.relative$ | async" 
-        (change)="setRelativeMeasurement($event.target)">
-      Relative to <b>{{measurementSelectors.zeroRange$ | async | duration }}</b>
-    </label>
-  </div>
+  @if ((measurementSelectors.zeroRange$ | async) != null) {
+    <div class="checkbox float-left"
+      >
+      <label>
+        <input type="checkbox"
+          [checked]="measurementSelectors.relative$ | async"
+          (change)="setRelativeMeasurement($event.target)">
+        Relative to <b>{{measurementSelectors.zeroRange$ | async | duration }}</b>
+      </label>
+    </div>
+  }
 
   <!-- button to set zero -->
   <div class="float-right">
-    <button class="btn btn-secondary" 
+    <button class="btn btn-secondary"
     (click)="measurementService.setZero()">Set Zero</button>
   </div>
-  
+
 </div>

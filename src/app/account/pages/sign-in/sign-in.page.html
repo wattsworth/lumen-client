@@ -2,13 +2,15 @@
   <div class="col-md-9 col-sm-6">
     <div class="carousel-box">
       <carousel [noPause]="false" [interval]="3000">
-        <slide *ngFor="let slide of slides">
-          <img src="{{slide.url}}" alt="First slide">
-          <div class="carousel-caption">
-            <h3>{{slide.name}}</h3>
-            <p>{{slide.description}}</p>
-          </div>
-        </slide>
+        @for (slide of slides; track slide) {
+          <slide>
+            <img src="{{slide.url}}" alt="First slide">
+            <div class="carousel-caption">
+              <h3>{{slide.name}}</h3>
+              <p>{{slide.description}}</p>
+            </div>
+          </slide>
+        }
       </carousel>
     </div>
   </div>
@@ -19,26 +21,30 @@
       <div class="form-group" [class.has-error]="!form.get('email').valid && !form.get('email').pristine">
         <label class="control-label" for="email">E-mail</label>
         <input class="form-control" id="email"
-              type="email"
-              autocomplete="email"
-              [formControl]="form.get('email') | formControl" >
+          type="email"
+          autocomplete="email"
+          [formControl]="form.get('email') | formControl" >
       </div>
       <div class="form-group">
         <label class="control-label" for="password">Password</label>
-        <input type="password" class="form-control" 
-              [formControl]="form.get('password') | formControl"
-              autocomplete="current-password" 
-              id="password">
+        <input type="password" class="form-control"
+          [formControl]="form.get('password') | formControl"
+          autocomplete="current-password"
+          id="password">
       </div>
-      <button class="btn btn-primary btn-block" 
-              (click)="onSubmit(form.value)"
-              [disabled]="!form.valid || (accountSelectors.loggingIn$ | async)">
-              Sign In
-              <fa-icon [icon]="['fas', 'spinner']" animation="spin" 
-                *ngIf="accountSelectors.loggingIn$ | async"></fa-icon>
+      <button class="btn btn-primary btn-block"
+        (click)="onSubmit(form.value)"
+        [disabled]="!form.valid || (accountSelectors.loggingIn$ | async)">
+        Sign In
+        @if (accountSelectors.loggingIn$ | async) {
+          <fa-icon [icon]="['fas', 'spinner']" animation="spin"
+          ></fa-icon>
+        }
       </button>
-      <button *ngIf="(emailEnabled$ | async) && !(accountSelectors.loggingIn$ | async)" class="btn btn-link" (click)="resetPassword(form.get('email').value)">
-          Forgot your password?</button>
+      @if ((emailEnabled$ | async) && !(accountSelectors.loggingIn$ | async)) {
+        <button class="btn btn-link" (click)="resetPassword(form.get('email').value)">
+        Forgot your password?</button>
+      }
     </form>
   </div>
 </div>

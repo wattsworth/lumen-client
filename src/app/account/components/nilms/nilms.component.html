@@ -1,42 +1,57 @@
 <table class="table">
   <!--<thead>
-    <tr>
-      <th>status</th>
-      <th>role</th>
-      <th>name</th>
-      <th></th>
-    </tr>
-  </thead>-->
+  <tr>
+    <th>status</th>
+    <th>role</th>
+    <th>name</th>
+    <th></th>
+  </tr>
+</thead>-->
 
-  <!-- nilms with admin or owner privleges -->
-  <tr *ngFor="let nilm of nilms$ | async">
+<!-- nilms with admin or owner privleges -->
+@for (nilm of nilms$ | async; track nilm) {
+  <tr>
     <!-- Installation status (nilm state) -->
     <td style="vertical-align: middle">
-      <fa-icon *ngIf="nilm.available" [icon]="['fas', 'circle']" size="2x" class="icon available" tooltip="online"></fa-icon>
-      <fa-icon *ngIf="!nilm.available" [icon]="['fas', 'circle']" size="2x" class="icon offline" tooltip="offline"></fa-icon>
+      @if (nilm.available) {
+        <fa-icon [icon]="['fas', 'circle']" size="2x" class="icon available" tooltip="online"></fa-icon>
+      }
+      @if (!nilm.available) {
+        <fa-icon [icon]="['fas', 'circle']" size="2x" class="icon offline" tooltip="offline"></fa-icon>
+      }
     </td>
     <!-- admin icon -->
     <td style="vertical-align: middle">
-      <fa-icon *ngIf="nilm.role=='admin'"  [icon]="['fas', 'user-shield']" size="2x" [fixedWidth]="true" tooltip="admin"></fa-icon>
-      <fa-icon *ngIf="nilm.role=='owner'"  [icon]="['fas', 'user']" size="2x" [fixedWidth]="true" tooltip="owner"></fa-icon>
-      <fa-icon *ngIf="nilm.role=='viewer'" [icon]="['fas', 'eye']" size="2x" [fixedWidth]="true" tooltip="viewer"></fa-icon>
+      @if (nilm.role=='admin') {
+        <fa-icon  [icon]="['fas', 'user-shield']" size="2x" [fixedWidth]="true" tooltip="admin"></fa-icon>
+      }
+      @if (nilm.role=='owner') {
+        <fa-icon  [icon]="['fas', 'user']" size="2x" [fixedWidth]="true" tooltip="owner"></fa-icon>
+      }
+      @if (nilm.role=='viewer') {
+        <fa-icon [icon]="['fas', 'eye']" size="2x" [fixedWidth]="true" tooltip="viewer"></fa-icon>
+      }
     </td>
     <!-- Installation name -->
-    <td style="vertical-align: middle"> 
+    <td style="vertical-align: middle">
       <span [tooltip]="nilm.description">{{nilm.name | ellipsis:18}}</span>
     </td>
     <!-- Admin/Owner access -->
     <td>
-      <button class="btn btn-secondary" 
-        *ngIf="nilm.role=='admin' || nilm.role=='owner'"
-        [routerLink]="['/installations',nilm.id]">Manage
-      </button>
+      @if (nilm.role=='admin' || nilm.role=='owner') {
+        <button class="btn btn-secondary"
+          [routerLink]="['/installations',nilm.id]">Manage
+        </button>
+      }
     </td>
   </tr>
+}
 </table>
 <!-- ...or a message if the user doesn't have access to any installations -->
-<div class="alert alert-info" *ngIf="(nilms$ | async).length==0">
-    You do have access to any installations</div>
+@if ((nilms$ | async).length==0) {
+  <div class="alert alert-info">
+  You do have access to any installations</div>
+}
 
 <!-- add a new NILM -->
 <div class="pr-4">
@@ -48,10 +63,10 @@
 </div>
 
 <!-- ====== add NILM modal ==== -->
-<div class="modal fade" bsModal #nilmModal="bs-modal" 
-     [config]="{backdrop: true}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #nilmModal="bs-modal"
+  [config]="{backdrop: true}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -62,17 +77,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="accountSelectors.can_add_installations$ | async; else unauthorized" >
-          On the target run <code>joule master add lumen</code> using the key below:
-          <div class="auth-key">
-            {{accountSelectors.installation_token$ | async}}
+        @if (accountSelectors.can_add_installations$ | async) {
+          <div >
+            On the target run <code>joule master add lumen</code> using the key below:
+            <div class="auth-key">
+              {{accountSelectors.installation_token$ | async}}
+            </div>
           </div>
-        </div>
-        <ng-template #unauthorized>
+        } @else {
           <div class="alert alert-warning" role="alert">
             You must already be an administrator of at least one installation in order to add new installations.
           </div>
-        </ng-template>
+        }
       </div>
     </div>
   </div>

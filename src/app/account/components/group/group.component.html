@@ -18,22 +18,24 @@
 </div>
 <!-- group members -->
 <table class="table table-striped mb-4">
-  <tr *ngFor="let member of members$ | async">
-    <!-- member name -->
-    <td>{{member.first_name}} {{member.last_name}}
-    <!-- remove the member -->
-      <span class="float-right" (click)='removeMember(member)'>
+  @for (member of members$ | async; track member) {
+    <tr>
+      <!-- member name -->
+      <td>{{member.first_name}} {{member.last_name}}
+        <!-- remove the member -->
+        <span class="float-right" (click)='removeMember(member)'>
           <fa-icon [icon]="['fas', 'times']" class="icon delete"></fa-icon>
-      </span>
-    </td>
-  </tr>
+        </span>
+      </td>
+    </tr>
+  }
 </table>
 
 <!-- ====== edit group modal ==== -->
-<div class="modal fade" bsModal #groupModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #groupModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -45,7 +47,7 @@
       </div>
       <div class="modal-body">
         <account-group-form (cancel)="groupModal.hide()" (save)="updateGroup($event)"
-          [group] = "group"></account-group-form>
+        [group] = "group"></account-group-form>
       </div>
     </div>
   </div>
@@ -53,11 +55,11 @@
 
 
 <!-- ====== add member modal ====== -->
-<div class="modal fade" bsModal #userModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     (onShow)="addMemberShown()" 
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #userModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  (onShow)="addMemberShown()"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -69,7 +71,7 @@
       </div>
       <div class="modal-body">
         <!-- select how to add a user -->
-        <span class="lead">I want to:</span> 
+        <span class="lead">I want to:</span>
         <ng-select [(ngModel)]="userType" class="selection-options"
           class="selection-options"
           [items]="userOptions$ | async"
@@ -79,60 +81,68 @@
         </ng-select>
         <hr/>
 
-        <div [ngSwitch]='userType'>
-          <!-- Option 1: select an existing user -->
-          <div *ngSwitchCase="'select'">
-            <ng-select [(ngModel)]="selectedUser"
-              [items]="selectEntries$ | async"
-              bindLabel="label"
-              bindValue="value"
-              placeholder = "select a user"
-              notFoundText = "no users found">
-              <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
-                 <span [ngOptionHighlight]="search">{{item.label}}</span>
-              </ng-template>
-            </ng-select>
-            <!-- Save and Cancel buttons -->
-            <div class="clearfix">
-              <!-- save -->
-              <button class="btn btn-primary float-left mtop" 
-                      [disabled]="selectedUser==null"
-                      (click)="addMember(selectedUser)">Save</button>
-              <!-- cancel -->
-              <button class="btn btn-secondary float-right mtop"
+        <div>
+          @switch (userType) {
+            <!-- Option 1: select an existing user -->
+            @case ('select') {
+              <div>
+                <ng-select [(ngModel)]="selectedUser"
+                  [items]="selectEntries$ | async"
+                  bindLabel="label"
+                  bindValue="value"
+                  placeholder = "select a user"
+                  notFoundText = "no users found">
+                  <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+                    <span [ngOptionHighlight]="search">{{item.label}}</span>
+                  </ng-template>
+                </ng-select>
+                <!-- Save and Cancel buttons -->
+                <div class="clearfix">
+                  <!-- save -->
+                  <button class="btn btn-primary float-left mtop"
+                    [disabled]="selectedUser==null"
+                  (click)="addMember(selectedUser)">Save</button>
+                  <!-- cancel -->
+                  <button class="btn btn-secondary float-right mtop"
+                    (click)="userModal.hide()">
+                  Cancel</button>
+                </div>
+              </div>
+            }
+            <!-- Option 2: create a new user -->
+            @case ('create') {
+              <div>
+                <app-user-form (save)="createMember($event)"
+                  (cancel)="cancel()">
+                </app-user-form>
+              </div>
+            }
+            <!-- Option 3: invite a new user-->
+            @case ('invite') {
+              <div>
+                <form [formGroup]="form">
+                  <div class="form-group"
+                    [class.has-error]="!form.get('email').valid && !form.get('email').pristine">
+                    <label>Email address</label>
+                    <input type="email" class="form-control" placeholder="Email"
+                      [formControl]="form.controls['email'] | formControl">
+                  </div>
+                  <!-- Save and Cancel buttons -->
+                  <div class="clearfix">
+                    <!-- save -->
+                    <button class="btn btn-primary float-left mtop"
+                      [disabled]="form.valid==false"
+                    (click)="inviteMember()">Invite</button>
+                    <!-- cancel -->
+                    <button class="btn btn-secondary float-right mtop"
                       (click)="userModal.hide()">
-                      Cancel</button>
-            </div>
-          </div>
-          <!-- Option 2: create a new user -->
-          <div *ngSwitchCase="'create'">
-            <app-user-form (save)="createMember($event)"
-                          (cancel)="cancel()">
-            </app-user-form>
-          </div>
-          <!-- Option 3: invite a new user-->
-          <div *ngSwitchCase="'invite'">
-            <form [formGroup]="form">
-              <div class="form-group"
-                [class.has-error]="!form.get('email').valid && !form.get('email').pristine">
-                <label>Email address</label>
-                <input type="email" class="form-control" placeholder="Email" 
-                [formControl]="form.controls['email'] | formControl">
+                    Cancel</button>
+                  </div>
+                </form>
               </div>
-              <!-- Save and Cancel buttons -->
-              <div class="clearfix">
-                <!-- save -->
-                <button class="btn btn-primary float-left mtop" 
-                     [disabled]="form.valid==false"   
-                        (click)="inviteMember()">Invite</button>
-                <!-- cancel -->
-                <button class="btn btn-secondary float-right mtop"
-                        (click)="userModal.hide()">
-                        Cancel</button>
-              </div>
-            </form>
-          </div>
+            }
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>

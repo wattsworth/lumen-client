@@ -8,35 +8,41 @@
           class="form-control" placeholder="auto" (change)="onBlur()">
       </div>
     </div>
-    <div class="form-group row" *ngIf="yaxis_settings">
+    @if (yaxis_settings) {
+      <div class="form-group row">
         <label for="fontsize" class="col-sm-6 col-form-label">Legend Font</label>
         <div class="col-sm-6">
           <input type="number" [(ngModel)]="settings.legend_font_size"
-          name="legend_font_size" min="5" step="0.5"
-          class="form-control" placeholder="auto" (change)="onBlur()">
+            name="legend_font_size" min="5" step="0.5"
+            class="form-control" placeholder="auto" (change)="onBlur()">
         </div>
       </div>
+    }
     <div class="form-group row">
       <label for="fontsize" class="col-sm-6 col-form-label">Ticks</label>
       <div class="col-sm-6">
         <input type="number" min="2" [(ngModel)]="settings.ticks" name = "ticks"
-        class="form-control" placeholder="auto" (change)="onBlur()">
+          class="form-control" placeholder="auto" (change)="onBlur()">
       </div>
     </div>
-    <div class="form-group row" *ngIf="yaxis_settings">
-      <label for="fontsize" class="col-sm-6 col-form-label">value &times;  10<sup>x</sup></label>
-      <div class="col-sm-6">
-        <input type="number" [(ngModel)]="settings.scale" name="scale" step="1" required
-        class="form-control" placeholder="0" (change)="onBlur()">
+    @if (yaxis_settings) {
+      <div class="form-group row">
+        <label for="fontsize" class="col-sm-6 col-form-label">value &times;  10<sup>x</sup></label>
+        <div class="col-sm-6">
+          <input type="number" [(ngModel)]="settings.scale" name="scale" step="1" required
+            class="form-control" placeholder="0" (change)="onBlur()">
+        </div>
       </div>
-    </div>
-    <div class="form-group row" *ngIf="yaxis_settings">
-      <label for="fontsize" class="col-sm-6 col-form-label">Precision</label>
-      <div class="col-sm-6">
-        <input type="number" [(ngModel)]="settings.precision"
-        name="precision" min="0" max="3"
-        class="form-control" placeholder="auto" (change)="onBlur()">
+    }
+    @if (yaxis_settings) {
+      <div class="form-group row">
+        <label for="fontsize" class="col-sm-6 col-form-label">Precision</label>
+        <div class="col-sm-6">
+          <input type="number" [(ngModel)]="settings.precision"
+            name="precision" min="0" max="3"
+            class="form-control" placeholder="auto" (change)="onBlur()">
+        </div>
       </div>
-    </div>
+    }
   </form>
 </div>

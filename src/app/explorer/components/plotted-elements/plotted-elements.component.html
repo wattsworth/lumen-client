@@ -5,21 +5,21 @@
     <fa-icon [icon]="['fas', 'square']" transform="shrink-3" [style.color]="element.color"></fa-icon>
   </fa-layers>
   <!--<span class="fa-stack fa-lg">
-        <i class="fa fa-square fa-stack-1x fa-lg"></i>
-       <i class="fa fa-square fa-stack-1x" [style.color]="element.color"></i>
-      </span> -->
-  <span [tooltip]="tipTemplate" placement='right' class="lead name" [delay]="500"> {{displayName}} </span>
-  <fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="hideElement()"></fa-icon>
+  <i class="fa fa-square fa-stack-1x fa-lg"></i>
+  <i class="fa fa-square fa-stack-1x" [style.color]="element.color"></i>
+</span> -->
+<span [tooltip]="tipTemplate" placement='right' class="lead name" [delay]="500"> {{displayName}} </span>
+<fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="hideElement()"></fa-icon>
 
-  <ng-template #tipTemplate><fa-icon [icon]="['fas', 'database']"></fa-icon> {{toolTipText$ | async}}</ng-template>
+<ng-template #tipTemplate><fa-icon [icon]="['fas', 'database']"></fa-icon> {{toolTipText$ | async}}</ng-template>
 </div>
 
 
 <!-- ====== edit plot settings ====== -->
-<div class="modal fade" bsModal #elementModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #elementModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -34,40 +34,42 @@
           <div class="col-md-4">
             <!-- customize plot display name -->
             <div class="form-group">
-                <label class="form-label" for="element-name">Display Name</label>
-                <input type="text" id="element-name" class="form-control" placeholder="{{element.name}}"
-                  [(ngModel)]="newName">
+              <label class="form-label" for="element-name">Display Name</label>
+              <input type="text" id="element-name" class="form-control" placeholder="{{element.name}}"
+                [(ngModel)]="newName">
             </div>
             <!-- select plot color -->
             <div class="form-group">
-                <label class="form-label" for="element-color">Color</label>
-                <input type="text" id="element-color" class="form-control" #colorPicker value="{{element.color}}">
+              <label class="form-label" for="element-color">Color</label>
+              <input type="text" id="element-color" class="form-control" #colorPicker value="{{element.color}}">
             </div>
             <!-- set plot axis -->
             <div class="form-group" [ngClass]="{'has-error': axisMessage!=''}">
               <label class="control-label" for="element-axis">Axis</label>
               <ng-select [(ngModel)]="newAxis"
-                  class="selection-options"
-                  bindValue="value"
-                  [items]="axisOptions"
-                  placeholder = "select one">
+                class="selection-options"
+                bindValue="value"
+                [items]="axisOptions"
+                placeholder = "select one">
               </ng-select>
               <span class="help-block">{{axisMessage}}</span>
-            </div>      
-            
+            </div>
+
           </div>
           <!-- element information -->
           <div class="col-md-8">
             <div class="well">
               <h4 class="text-muted">Element Information</h4>
-              
+
               <table class="table table-condensed">
-                <tbody *ngFor="let info of [elementInfo$ | async]">
-                <tr><td><b>Stream:</b></td><td>{{info.stream_name}}</td></tr>
-                <tr><td><b>Source:</b></td><td>{{info.installation_name}}</td></tr>
-                <tr><td><b>Path:</b></td><td> {{info.path}} </td></tr>
-                <tr><td><b>URL:</b></td><td> {{info.installation_url}}</td></tr>
-                </tbody>
+                @for (info of [elementInfo$ | async]; track info) {
+                  <tbody>
+                    <tr><td><b>Stream:</b></td><td>{{info.stream_name}}</td></tr>
+                    <tr><td><b>Source:</b></td><td>{{info.installation_name}}</td></tr>
+                    <tr><td><b>Path:</b></td><td> {{info.path}} </td></tr>
+                    <tr><td><b>URL:</b></td><td> {{info.installation_url}}</td></tr>
+                  </tbody>
+                }
               </table>
             </div>
           </div>
@@ -75,12 +77,12 @@
         <!-- Save and Cancel buttons -->
         <div class="clearfix">
           <!-- save -->
-          <button class="btn btn-primary float-left" 
-                  (click)="onSave()">Save</button>
+          <button class="btn btn-primary float-left"
+          (click)="onSave()">Save</button>
           <!-- cancel -->
           <button class="btn btn-secondary float-right"
-                  (click)="elementModal.hide()">
-                  Cancel</button>
+            (click)="elementModal.hide()">
+          Cancel</button>
         </div>
       </div>
     </div>

@@ -1,11 +1,19 @@
-<div class="alerts" *ngFor="let messages of [(messages$ | async)]">
-  <alert type="success" [dismissible]="true" *ngFor="let notice of messages.notices">
-    {{notice}}
-  </alert>
-  <alert type="danger" [dismissible]="true" *ngFor="let error of messages.errors">
-    <strong>Error:</strong> {{error}}
-  </alert>
-  <alert type="warning" [dismissible]="true" *ngFor="let warning of messages.warnings">
-    <strong>Warning: </strong>{{warning}}
-  </alert>
-</div>
+@for (messages of [(messages$ | async)]; track messages) {
+  <div class="alerts">
+    @for (notice of messages.notices; track notice) {
+      <alert type="success" [dismissible]="true">
+        {{notice}}
+      </alert>
+    }
+    @for (error of messages.errors; track error) {
+      <alert type="danger" [dismissible]="true">
+        <strong>Error:</strong> {{error}}
+      </alert>
+    }
+    @for (warning of messages.warnings; track warning) {
+      <alert type="warning" [dismissible]="true">
+        <strong>Warning: </strong>{{warning}}
+      </alert>
+    }
+  </div>
+}

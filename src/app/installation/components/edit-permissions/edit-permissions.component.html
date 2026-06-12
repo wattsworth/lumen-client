@@ -1,26 +1,32 @@
 
 <span class="lead"><fa-icon [icon]="['fas', 'user-shield']"></fa-icon> Administrators</span><hr class="compact"/>
-<app-permission  *ngFor="let permission of admins" 
-  [permission]='permission'
+@for (permission of admins; track permission) {
+  <app-permission
+    [permission]='permission'
   (remove)='removePermission(permission)'></app-permission>
+}
 <div class="lead compact"><fa-icon [icon]="['fas', 'user']"></fa-icon> Owners</div><hr class="compact"/>
-<app-permission *ngFor="let permission of owners" 
-  [permission]='permission'
+@for (permission of owners; track permission) {
+  <app-permission
+    [permission]='permission'
   (remove)='removePermission(permission)'></app-permission>
+}
 <div class="lead compact"><fa-icon [icon]="['fas', 'eye']"></fa-icon> Viewers</div><hr class="compact"/>
-<app-permission *ngFor="let permission of viewers"
-  [permission]='permission'
+@for (permission of viewers; track permission) {
+  <app-permission
+    [permission]='permission'
   (remove)='removePermission(permission)'></app-permission>
+}
 
 <button class="btn btn-primary" (click)='permissionModal.show()'>
-<fa-icon [icon]="['fas', 'user-plus']"></fa-icon>
- Add Permission</button>
+  <fa-icon [icon]="['fas', 'user-plus']"></fa-icon>
+Add Permission</button>
 
 
 
 <div class="modal fade" bsModal #permissionModal="bs-modal" [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog" (onShow)="addPermissionShown()"
-     (onHide)="resetModal()" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  tabindex="-1" role="dialog" (onShow)="addPermissionShown()"
+  (onHide)="resetModal()" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -30,90 +36,102 @@
         </button>
       </div>
       <div class="modal-body">
-        
+
 
         <!-- select how to add a user -->
         <div>
-          <div class="lead">I want to:</div> 
+          <div class="lead">I want to:</div>
           <div>
             <ng-select [(ngModel)]="userType"
-            class="selection-options"
-                  [items]="userOptions$ | async"
-                  [clearable]="false"
-                  bindValue = 'value'
-                  placeholder = "select one">
+              class="selection-options"
+              [items]="userOptions$ | async"
+              [clearable]="false"
+              bindValue = 'value'
+              placeholder = "select one">
             </ng-select>
           </div>
-          
+
         </div>
         <div>
-          <span class="lead">to be:</span> 
+          <span class="lead">to be:</span>
           <ng-select [(ngModel)]="role"
-          class="selection-options"
-                [items]="roleOptions"
-                [clearable]="false"
-                bindValue = 'value'
-                placeholder = "select one">
+            class="selection-options"
+            [items]="roleOptions"
+            [clearable]="false"
+            bindValue = 'value'
+            placeholder = "select one">
           </ng-select>
         </div>
         <hr/>
 
 
         <!-- ================================= -->
-        <div [ngSwitch]='userType'>
-          <!-- Option 1: select an existing user -->
-          <div *ngSwitchCase="'select'">
-            <ng-select [(ngModel)]="target"
-              [items]="selectEntries$ | async"
-              bindValue = "value"
-              placeholder = "select a user or group"
-              notFoundText = "no users or groups found">
-              <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
-                  <fa-icon [icon]="['fas', 'user']" [fixedWidth]="true" *ngIf="item.type=='user'"></fa-icon>
-                  <fa-icon [icon]="['fas', 'users']" [fixedWidth]="true" *ngIf="item.type!='user'"></fa-icon>
-                  <span [ngOptionHighlight]="search">  {{item.label}}</span>
-                </ng-template>
-            </ng-select>
-            <!-- Save and Cancel buttons -->
-            <div class="clearfix">
-              <!-- save -->
-              <button class="btn btn-primary float-left mtop" 
-                      [disabled]="target==null"
-                      (click)="createPermission(target)">Save</button>
-              <!-- cancel -->
-              <button class="btn btn-secondary float-right mtop"
-                      (click)="cancel()">
-                      Cancel</button>
-            </div>
-          </div>
-          <!-- Option 2: create a new user -->
-          <div *ngSwitchCase="'create'">
-            <app-user-form (save)="createUserWithPermission($event)"
-                          (cancel)="cancel()">
-            </app-user-form>
-          </div>
-          <!-- Option 3: invite a new user-->
-          <div *ngSwitchCase="'invite'">
-            <form [formGroup]="emailForm">
-              <div class="form-group"
-                [class.has-error]="!emailForm.get('email').valid && !emailForm.get('email').pristine">
-                <label>Email address</label>
-                <input type="email" class="form-control" placeholder="Email"
-                  [formControl]="emailForm.get('email') | formControl">
+        <div>
+          @switch (userType) {
+            <!-- Option 1: select an existing user -->
+            @case ('select') {
+              <div>
+                <ng-select [(ngModel)]="target"
+                  [items]="selectEntries$ | async"
+                  bindValue = "value"
+                  placeholder = "select a user or group"
+                  notFoundText = "no users or groups found">
+                  <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+                    @if (item.type=='user') {
+                      <fa-icon [icon]="['fas', 'user']" [fixedWidth]="true"></fa-icon>
+                    }
+                    @if (item.type!='user') {
+                      <fa-icon [icon]="['fas', 'users']" [fixedWidth]="true"></fa-icon>
+                    }
+                    <span [ngOptionHighlight]="search">  {{item.label}}</span>
+                  </ng-template>
+                </ng-select>
+                <!-- Save and Cancel buttons -->
+                <div class="clearfix">
+                  <!-- save -->
+                  <button class="btn btn-primary float-left mtop"
+                    [disabled]="target==null"
+                  (click)="createPermission(target)">Save</button>
+                  <!-- cancel -->
+                  <button class="btn btn-secondary float-right mtop"
+                    (click)="cancel()">
+                  Cancel</button>
+                </div>
               </div>
-            </form>
-            <!-- Save and Cancel buttons -->
-            <div class="clearfix">
-              <!-- save -->
-              <button class="btn btn-primary float-left mtop" 
-                      [disabled]="!emailForm.valid"
-                      (click)="inviteUserWithPermission()">Invite</button>
-              <!-- cancel -->
-              <button class="btn btn-secondary float-right mtop"
-                      (click)="cancel()">
-                      Cancel</button>
-            </div>
-          </div>
+            }
+            <!-- Option 2: create a new user -->
+            @case ('create') {
+              <div>
+                <app-user-form (save)="createUserWithPermission($event)"
+                  (cancel)="cancel()">
+                </app-user-form>
+              </div>
+            }
+            <!-- Option 3: invite a new user-->
+            @case ('invite') {
+              <div>
+                <form [formGroup]="emailForm">
+                  <div class="form-group"
+                    [class.has-error]="!emailForm.get('email').valid && !emailForm.get('email').pristine">
+                    <label>Email address</label>
+                    <input type="email" class="form-control" placeholder="Email"
+                      [formControl]="emailForm.get('email') | formControl">
+                  </div>
+                </form>
+                <!-- Save and Cancel buttons -->
+                <div class="clearfix">
+                  <!-- save -->
+                  <button class="btn btn-primary float-left mtop"
+                    [disabled]="!emailForm.valid"
+                  (click)="inviteUserWithPermission()">Invite</button>
+                  <!-- cancel -->
+                  <button class="btn btn-secondary float-right mtop"
+                    (click)="cancel()">
+                  Cancel</button>
+                </div>
+              </div>
+            }
+          }
         </div>
       </div>
     </div>

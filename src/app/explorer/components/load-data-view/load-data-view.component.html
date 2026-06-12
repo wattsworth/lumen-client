@@ -3,55 +3,60 @@
   <div class="col-sm-8">
     <div class="input-group">
       <div class="input-group-prepend">
-          <span class="input-group-text">
-              <fa-icon [icon]="['fas', 'search']" ></fa-icon>
-          </span>
+        <span class="input-group-text">
+          <fa-icon [icon]="['fas', 'search']" ></fa-icon>
+        </span>
       </div>
-      <input type="text"  class="form-control" 
-        placeholder="search by name or description" 
+      <input type="text"  class="form-control"
+        placeholder="search by name or description"
         aria-describedby="basic-addon1"
         [ngModel]="plotSelectors.dataViewFilterText$ | async"
-         (ngModelChange)="setDataViewFilterText($event)">
+        (ngModelChange)="setDataViewFilterText($event)">
     </div>
   </div>
   <div class="col-sm-4">
     <div class="checkbox mt-2 mb-1">
       <label>
-        <input type="checkbox" 
+        <input type="checkbox"
           (change)="setShowPublicDataViews($event.target)"
           [checked]="plotSelectors.showPublicDataViews$ | async" > public views?
-      </label>
+        </label>
+      </div>
     </div>
   </div>
-</div>
-<!-- data view thumbnails -->
-<div *ngIf="plotSelectors.dataViewsLoaded$ | async; else loading">
-  <div class="data-view-list" *ngIf="hasViews$ | async; else empty">
-    <!-- list of thumbnails that match search criteria -->
-    <div *ngFor="let view of plotSelectors.filteredDataViews$ | async">
-      <app-plot-thumbnail class="card" 
-        [view]="view" (click)="loadDataView(view)">
-      </app-plot-thumbnail>
-    </div>
-    <!-- show message if no views match the search criteria -->
-    <div class="alert alert-info" *ngIf="(hasFilteredViews$ | async)==false">
-      No views match your search criteria
-    </div>
+  <!-- data view thumbnails -->
+  @if (plotSelectors.dataViewsLoaded$ | async) {
+    <div>
+      @if (hasViews$ | async) {
+        <div class="data-view-list">
+          <!-- list of thumbnails that match search criteria -->
+          @for (view of plotSelectors.filteredDataViews$ | async; track view) {
+            <div>
+              <app-plot-thumbnail class="card"
+                [view]="view" (click)="loadDataView(view)">
+            </app-plot-thumbnail>
+          </div>
+        }
+        <!-- show message if no views match the search criteria -->
+        @if ((hasFilteredViews$ | async)==false) {
+          <div class="alert alert-info">
+            No views match your search criteria
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="alert alert-info">
+        No saved views
+      </div>
+    }
+    <!-- show a message if there aren't saved data views -->
   </div>
-
-  <!-- show a message if there aren't saved data views -->
-  <ng-template #empty class="alert alert-info">
-    <div class="alert alert-info">
-      No saved views
-    </div>
-  </ng-template>
-</div>
-<!--show spinner if we are waiting on dataviews -->
-<ng-template #loading>
+} @else {
   <div class="loading-container">
     <div class="loading">
       <fa-icon [icon]="['fas', 'spinner']" animation="spin" size="4x"></fa-icon>
       <p class="lead"> Loading... </p>
     </div>
   </div>
-</ng-template>
+}
+<!--show spinner if we are waiting on dataviews -->

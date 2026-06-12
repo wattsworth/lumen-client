@@ -6,33 +6,39 @@
     <fa-icon [icon]="['fas', 'square']" transform="shrink-3" [style.color]="eventStream.plot_settings.color.value.fixed"></fa-icon>
   </fa-layers>
   <!--<span class="fa-stack fa-lg">
-        <i class="fa fa-square fa-stack-1x fa-lg"></i>
-       <i class="fa fa-square fa-stack-1x" [style.color]="element.color"></i>
-      </span> -->
-  <span [tooltip]="tipTemplate" placement='right' class="lead name" [delay]="500"> {{displayName}} </span>
-  <fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="hideEventStream()"></fa-icon>
+  <i class="fa fa-square fa-stack-1x fa-lg"></i>
+  <i class="fa fa-square fa-stack-1x" [style.color]="element.color"></i>
+</span> -->
+<span [tooltip]="tipTemplate" placement='right' class="lead name" [delay]="500"> {{displayName}} </span>
+<fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="hideEventStream()"></fa-icon>
 
-  <ng-template #tipTemplate><fa-icon [icon]="['fas', 'database']"></fa-icon> {{toolTipText$ | async}}</ng-template>
+<ng-template #tipTemplate><fa-icon [icon]="['fas', 'database']"></fa-icon> {{toolTipText$ | async}}</ng-template>
 </div>
 
 
 
 <!-- ====== edit plot settings ====== -->
-<div class="modal fade" bsModal #eventStreamModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #eventStreamModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <!-- datalist of categories for the category Event Field types -->
-      <div *ngFor="let item of eventFieldCategoryGroups">
-        <datalist [attr.id]="'eventfield-categories'+eventStream.id+'-'+item.group">
-          <option *ngFor="let category of item.categories">{{ category }}</option>
-        </datalist>
-      </div>
+      @for (item of eventFieldCategoryGroups; track item) {
+        <div>
+          <datalist [attr.id]="'eventfield-categories'+eventStream.id+'-'+item.group">
+            @for (category of item.categories; track category) {
+              <option>{{ category }}</option>
+            }
+          </datalist>
+        </div>
+      }
       <!-- datalist of string Event Fields -->
       <datalist [attr.id]="'eventfields'+eventStream.id">
-        <option *ngFor = "let field of eventFields">{{field}}</option>
+        @for (field of eventFields; track field) {
+          <option>{{field}}</option>
+        }
       </datalist>
       <div class="modal-header">
         <!-- modal title bar -->
@@ -44,267 +50,293 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-4 border-right border-light">
-        <form [formGroup]='plotSettingsForm'>
-          <!-- Display Name -->
-          <div class="row">
-            <label class="col-12 label-name mb-0">Display Name</label>
-          </div>
-          <div class="row">
-            <div class="form-group col-12 mb-1">
-              <input type="text" class="form-control" formControlName="display_name" placeholder="{{eventStream.name}}">
-            </div>
-          </div>
-          <!-- Color Format -->
-          <div class="row">
-            <label class="col-2 label-name mb-0">Color</label>
-          </div>
-          <div formGroupName="color">
-            <div class="row">
-              <div class="form-group mb-0 col">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" value="fixed" formControlName="type" type="radio">
-                  <label class="form-check-label" > Fixed </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" value="attribute" formControlName="type" type="radio">
-                  <label class="form-check-label"> Dynamic </label>
+            <form [formGroup]='plotSettingsForm'>
+              <!-- Display Name -->
+              <div class="row">
+                <label class="col-12 label-name mb-0">Display Name</label>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 mb-1">
+                  <input type="text" class="form-control" formControlName="display_name" placeholder="{{eventStream.name}}">
                 </div>
               </div>
-            </div>
-            <div class="row" formGroupName="value">
-              <!-- fixed color -->
-              <div [hidden]="colorType()!='fixed'" 
-                class="form-group col-12 mb-1">
-                <input type="text" class="form-control"
-                #colorPicker formControlName="fixed">
+              <!-- Color Format -->
+              <div class="row">
+                <label class="col-2 label-name mb-0">Color</label>
               </div>
-              <!-- attribute color -->
-              <div *ngIf="colorType()=='attribute'" 
-                class="form-group col-12 mb-1">
-                <input type="text" class="form-control" placeholder="key" formControlName="attribute" [attr.list]="'eventfields'+eventStream.id" >
+              <div formGroupName="color">
+                <div class="row">
+                  <div class="form-group mb-0 col">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" value="fixed" formControlName="type" type="radio">
+                      <label class="form-check-label" > Fixed </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" value="attribute" formControlName="type" type="radio">
+                      <label class="form-check-label"> Dynamic </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" formGroupName="value">
+                  <!-- fixed color -->
+                  <div [hidden]="colorType()!='fixed'"
+                    class="form-group col-12 mb-1">
+                    <input type="text" class="form-control"
+                      #colorPicker formControlName="fixed">
+                  </div>
+                  <!-- attribute color -->
+                  @if (colorType()=='attribute') {
+                    <div
+                      class="form-group col-12 mb-1">
+                      <input type="text" class="form-control" placeholder="key" formControlName="attribute" [attr.list]="'eventfields'+eventStream.id" >
+                    </div>
+                  }
+                  <!-- numeric color -->
+                  @if (colorType()=='numeric') {
+                    <div class="form-group col-4 mb-1 pr-0">
+                      <input type="text" class="form-control" placeholder="key">
+                    </div>
+                  }
+                  @if (colorType()=='numeric') {
+                    <div class="form-group col-4 mb-1 pl-0 pr-0">
+                      <input type="text" class="form-control" placeholder="min">
+                    </div>
+                  }
+                  @if (colorType()=='numeric') {
+                    <div class="form-group col-4 mb-1 pl-0">
+                      <input type="text" class="form-control" placeholder="max">
+                    </div>
+                  }
+                </div>
               </div>
-              <!-- numeric color -->
-              <div *ngIf="colorType()=='numeric'" class="form-group col-4 mb-1 pr-0">
-                <input type="text" class="form-control" placeholder="key">
-              </div>
-              <div *ngIf="colorType()=='numeric'" class="form-group col-4 mb-1 pl-0 pr-0">
-                <input type="text" class="form-control" placeholder="min">
-              </div>
-              <div *ngIf="colorType()=='numeric'" class="form-group col-4 mb-1 pl-0">
-                <input type="text" class="form-control" placeholder="max">
-              </div>
-            </div>
-          </div>
-          <div class="row-section"></div>
+              <div class="row-section"></div>
 
-          <!-- Marker Format -->
-          <div class="row">
-            <label class="col-2 label-name mb-0">Marker</label>
-          </div>
-          <div formGroupName="marker">
-            <div class="row">
-              <div class="form-group col mb-0">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" value="fixed" formControlName="type" type="radio">
-                  <label class="form-check-label" > Fixed </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" value="attribute" formControlName="type" type="radio">
-                  <label class="form-check-label"> Dynamic </label>
-                </div>
+              <!-- Marker Format -->
+              <div class="row">
+                <label class="col-2 label-name mb-0">Marker</label>
               </div>
-            </div>
-            <div class="row">
-              <!-- fixed marker -->
-              <div *ngIf="markerType()=='fixed'" 
-                class="form-group col-6 mb-1">
-                <div formGroupName="value">
-                  <ng-select appearance="outline" [searchable]="false" [clearable]="false" formControlName="fixed">
-                    <ng-option value=".">
-                      <fa-icon [icon]="['fas', 'circle']"  [fixedWidth]="true"></fa-icon> (.)
-                    </ng-option>
-                    <ng-option value="o">
-                      <fa-icon [icon]="['far', 'circle']"  [fixedWidth]="true"></fa-icon> (o)
-                    </ng-option>
-                    <ng-option value="*">
-                      <fa-icon [icon]="['fas', 'star-of-life']"  [fixedWidth]="true"></fa-icon> (*)
-                    </ng-option>
-                    <ng-option value="+">
-                      <fa-icon [icon]="['fas', 'plus']"  [fixedWidth]="true"></fa-icon> (+)
-                    </ng-option>
-                    <ng-option value="x">
-                      <fa-icon [icon]="['fas', 'times']"  [fixedWidth]="true"></fa-icon> (x)
-                    </ng-option>
-                    <ng-option value=">">
-                      <fa-icon [icon]="['fas', 'caret-right']"  [fixedWidth]="true"></fa-icon> (>)
-                    </ng-option>
-                    <ng-option value="<">
-                      <fa-icon [icon]="['fas', 'caret-left']"  [fixedWidth]="true"></fa-icon> (<)
-                    </ng-option>
-                    <ng-option value="^">
-                      <fa-icon [icon]="['fas', 'caret-up']"  [fixedWidth]="true"></fa-icon> (^)
-                    </ng-option>
-                    <ng-option value="v">
-                      <fa-icon [icon]="['fas', 'caret-down']"  [fixedWidth]="true"></fa-icon> (v)
-                    </ng-option>
-                    <ng-option value="p">
-                      <fa-icon [icon]="['fas', 'adjust']"  [fixedWidth]="true"></fa-icon> (p)
-                    </ng-option>
-                    <ng-option value="h">
-                      <fa-icon [icon]="['fas', 'ban']"  [fixedWidth]="true"></fa-icon> (h)
-                    </ng-option>
-                    <ng-option value="d">
-                      <fa-icon [icon]="['fas', 'ankh']"  [fixedWidth]="true"></fa-icon> (d)
-                    </ng-option>
-                    <ng-option value="|">
-                      <fa-icon [icon]="['fas', 'ruler-vertical']"  [fixedWidth]="true"></fa-icon> (|)
-                    </ng-option>
-                    <ng-option value="-">
-                      <fa-icon [icon]="['fas', 'ruler-horizontal']"  [fixedWidth]="true"></fa-icon> (-)
-                    </ng-option>
-                  </ng-select>
+              <div formGroupName="marker">
+                <div class="row">
+                  <div class="form-group col mb-0">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" value="fixed" formControlName="type" type="radio">
+                      <label class="form-check-label" > Fixed </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" value="attribute" formControlName="type" type="radio">
+                      <label class="form-check-label"> Dynamic </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <!-- attribute marker -->
-              <div *ngIf="markerType()=='attribute'" 
-                class="form-group col-6 mb-1">
-                <div formGroupName="value">
-                  <input type="text" class="form-control" formControlName="attribute" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
-                </div>
-              </div>
-              <!-- marker size -->
-              <div class="form-group col-6 mb-1">
-                <div class="input-group">
-                  <input type="number" formControlName="size" class="form-control" placeholder="size">
-                  <div class="input-group-append">
-                    <span class="input-group-text">px</span>
+                <div class="row">
+                  <!-- fixed marker -->
+                  @if (markerType()=='fixed') {
+                    <div
+                      class="form-group col-6 mb-1">
+                      <div formGroupName="value">
+                        <ng-select appearance="outline" [searchable]="false" [clearable]="false" formControlName="fixed">
+                          <ng-option value=".">
+                            <fa-icon [icon]="['fas', 'circle']"  [fixedWidth]="true"></fa-icon> (.)
+                          </ng-option>
+                          <ng-option value="o">
+                            <fa-icon [icon]="['far', 'circle']"  [fixedWidth]="true"></fa-icon> (o)
+                          </ng-option>
+                          <ng-option value="*">
+                            <fa-icon [icon]="['fas', 'star-of-life']"  [fixedWidth]="true"></fa-icon> (*)
+                          </ng-option>
+                          <ng-option value="+">
+                            <fa-icon [icon]="['fas', 'plus']"  [fixedWidth]="true"></fa-icon> (+)
+                          </ng-option>
+                          <ng-option value="x">
+                            <fa-icon [icon]="['fas', 'times']"  [fixedWidth]="true"></fa-icon> (x)
+                          </ng-option>
+                          <ng-option value=">">
+                            <fa-icon [icon]="['fas', 'caret-right']"  [fixedWidth]="true"></fa-icon> (>)
+                          </ng-option>
+                          <ng-option value="<">
+                            <fa-icon [icon]="['fas', 'caret-left']"  [fixedWidth]="true"></fa-icon> (<)
+                          </ng-option>
+                          <ng-option value="^">
+                            <fa-icon [icon]="['fas', 'caret-up']"  [fixedWidth]="true"></fa-icon> (^)
+                          </ng-option>
+                          <ng-option value="v">
+                            <fa-icon [icon]="['fas', 'caret-down']"  [fixedWidth]="true"></fa-icon> (v)
+                          </ng-option>
+                          <ng-option value="p">
+                            <fa-icon [icon]="['fas', 'adjust']"  [fixedWidth]="true"></fa-icon> (p)
+                          </ng-option>
+                          <ng-option value="h">
+                            <fa-icon [icon]="['fas', 'ban']"  [fixedWidth]="true"></fa-icon> (h)
+                          </ng-option>
+                          <ng-option value="d">
+                            <fa-icon [icon]="['fas', 'ankh']"  [fixedWidth]="true"></fa-icon> (d)
+                          </ng-option>
+                          <ng-option value="|">
+                            <fa-icon [icon]="['fas', 'ruler-vertical']"  [fixedWidth]="true"></fa-icon> (|)
+                          </ng-option>
+                          <ng-option value="-">
+                            <fa-icon [icon]="['fas', 'ruler-horizontal']"  [fixedWidth]="true"></fa-icon> (-)
+                          </ng-option>
+                        </ng-select>
+                      </div>
+                    </div>
+                  }
+                  <!-- attribute marker -->
+                  @if (markerType()=='attribute') {
+                    <div
+                      class="form-group col-6 mb-1">
+                      <div formGroupName="value">
+                        <input type="text" class="form-control" formControlName="attribute" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
+                      </div>
+                    </div>
+                  }
+                  <!-- marker size -->
+                  <div class="form-group col-6 mb-1">
+                    <div class="input-group">
+                      <input type="number" formControlName="size" class="form-control" placeholder="size">
+                      <div class="input-group-append">
+                        <span class="input-group-text">px</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="row-section"></div>
+              <div class="row-section"></div>
 
-          <!-- Label Format -->
-          <div class="row">
-            <label class="col-2 label-name mb-0">Label</label>
-          </div>
-          <div formGroupName="label">
-            <div class="row">
-              <div class="form-group col mb-0">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" formControlName="type" value="fixed" type="radio">
-                  <label class="form-check-label" > Fixed </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" formControlName="type" value="attribute" type="radio">
-                  <label class="form-check-label"> Dynamic </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" formControlName="type" value="none" type="radio">
-                  <label class="form-check-label"> None </label>
-                </div>
+              <!-- Label Format -->
+              <div class="row">
+                <label class="col-2 label-name mb-0">Label</label>
               </div>
-            </div>
-            <div class="row" >
-              <div *ngIf="labelType()=='fixed'" class="form-group col-6 mb-1">
-                <div formGroupName="value">
-                  <input type="text" formControlName="fixed" class="form-control">
+              <div formGroupName="label">
+                <div class="row">
+                  <div class="form-group col mb-0">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="type" value="fixed" type="radio">
+                      <label class="form-check-label" > Fixed </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="type" value="attribute" type="radio">
+                      <label class="form-check-label"> Dynamic </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="type" value="none" type="radio">
+                      <label class="form-check-label"> None </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div *ngIf="labelType()=='attribute'" class="form-group col-6 mb-1">
-                <div formGroupName="value">
-                  <input type="text" formControlName="attribute" class="form-control" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
+                <div class="row" >
+                  @if (labelType()=='fixed') {
+                    <div class="form-group col-6 mb-1">
+                      <div formGroupName="value">
+                        <input type="text" formControlName="fixed" class="form-control">
+                      </div>
+                    </div>
+                  }
+                  @if (labelType()=='attribute') {
+                    <div class="form-group col-6 mb-1">
+                      <div formGroupName="value">
+                        <input type="text" formControlName="attribute" class="form-control" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
+                      </div>
+                    </div>
+                  }
+                  @if (labelType()!='none') {
+                    <div class="form-group col-6 mb-1">
+                      <div class="input-group">
+                        <input type="number" formControlName="size" class="form-control" placeholder="size">
+                        <div class="input-group-append">
+                          <span class="input-group-text">px</span>
+                        </div>
+                      </div>
+                    </div>
+                  }
                 </div>
+                <div class="row-section"></div>
               </div>
-              <div *ngIf="labelType()!='none'" class="form-group col-6 mb-1">
-                <div class="input-group">
-                  <input type="number" formControlName="size" class="form-control" placeholder="size">
-                  <div class="input-group-append">
-                    <span class="input-group-text">px</span>
+
+              <!-- Position -->
+              <div class="row">
+                <label class="col-2 label-name mb-0">Position</label>
+              </div>
+              <div formGroupName="position">
+                <div class="row">
+                  <div class="form-group col mb-0">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="type" value="fixed" type="radio">
+                      <label class="form-check-label"> Fixed </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="type" value="attribute" type="radio">
+                      <label class="form-check-label"> Dynamic </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  @if (positionType()=='fixed') {
+                    <div class="form-group col-6 mb-1" formGroupName="value">
+                      <input type="text" formControlName="fixed" class="form-control">
+                    </div>
+                  }
+                  @if (positionType()=='attribute') {
+                    <div class="form-group col-6 mb-1" formGroupName="value">
+                      <input type="text" formControlName="attribute" class="form-control" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
+                    </div>
+                  }
+                  <div class="form-group col-6 mb-1">
+                    <ng-select appearance="outline" [searchable]="false" [clearable]="false" formControlName="axis">
+                      <ng-option value="left">left</ng-option>
+                      <ng-option value="right">right</ng-option>
+                      <ng-option value="float">float</ng-option>
+                    </ng-select>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="row-section"></div>
-          </div>
-
-          <!-- Position -->
-          <div class="row">
-            <label class="col-2 label-name mb-0">Position</label>
-          </div>
-          <div formGroupName="position">
-            <div class="row">
-              <div class="form-group col mb-0">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" formControlName="type" value="fixed" type="radio">
-                  <label class="form-check-label"> Fixed </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" formControlName="type" value="attribute" type="radio">
-                  <label class="form-check-label"> Dynamic </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-6 mb-1" *ngIf="positionType()=='fixed'" formGroupName="value">
-                <input type="text" formControlName="fixed" class="form-control">
-              </div>
-              <div class="form-group col-6 mb-1" *ngIf="positionType()=='attribute'" formGroupName="value">
-                <input type="text" formControlName="attribute" class="form-control" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
-              </div>
-              <div class="form-group col-6 mb-1">
-                <ng-select appearance="outline" [searchable]="false" [clearable]="false" formControlName="axis">
-                  <ng-option value="left">left</ng-option>
-                  <ng-option value="right">right</ng-option>
-                  <ng-option value="float">float</ng-option>
-                </ng-select>
-                </div>
-            </div>
-          </div>
-          <div class="row-section"></div>
+              <div class="row-section"></div>
 
 
-          <!-- Height -->
-          <div class="row">
-            <label class="col-2 label-name mb-0">Height</label>
-          </div>
-          <div class="row">
-            <div class="form-group col mb-0" formGroupName="height">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" formControlName="type" value="fixed" type="radio">
-                <label class="form-check-label" > Fixed </label>
+              <!-- Height -->
+              <div class="row">
+                <label class="col-2 label-name mb-0">Height</label>
               </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" formControlName="type" value="attribute" type="radio">
-                <label class="form-check-label"> Dynamic </label>
+              <div class="row">
+                <div class="form-group col mb-0" formGroupName="height">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" formControlName="type" value="fixed" type="radio">
+                    <label class="form-check-label" > Fixed </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" formControlName="type" value="attribute" type="radio">
+                    <label class="form-check-label"> Dynamic </label>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="row" formGroupName="height">
-            <div class="form-group col-6 mb-1" formGroupName="value">
-              <input *ngIf="heightType()=='fixed'" type="text" class="form-control" formControlName="fixed">
-              <input *ngIf="heightType()=='attribute'" type="text" class="form-control" 
-               formControlName="attribute" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
-            </div>
-          </div>
-          <div class="row-section"></div>
-        </form>
+              <div class="row" formGroupName="height">
+                <div class="form-group col-6 mb-1" formGroupName="value">
+                  @if (heightType()=='fixed') {
+                    <input type="text" class="form-control" formControlName="fixed">
+                  }
+                  @if (heightType()=='attribute') {
+                    <input type="text" class="form-control"
+                      formControlName="attribute" placeholder="key"  [attr.list]="'eventfields'+eventStream.id">
+                  }
+                </div>
+              </div>
+              <div class="row-section"></div>
+            </form>
           </div>
           <div class="col-md-8">
             <div class="well">
               <h4 class="text-muted">Event Information</h4>
               <table class="table table-condensed">
                 <tbody>
-                <tr><td><b>Stream:</b></td><td> {{eventStream.path}} </td></tr>
-                <tr><td><b>Events:</b></td><td>{{eventStream.event_count}}</td></tr>
-                <tr><td><b>Filtered Events:</b></td><td> TODO</td></tr>
+                  <tr><td><b>Stream:</b></td><td> {{eventStream.path}} </td></tr>
+                  <tr><td><b>Events:</b></td><td>{{eventStream.event_count}}</td></tr>
+                  <tr><td><b>Filtered Events:</b></td><td> TODO</td></tr>
                 </tbody>
               </table>
               <h4 class="text-muted">Event Filter</h4>
               <!-- Filter Events Controls-->
               <app-filter-plotted-events
-              #eventFilterComponent
+                #eventFilterComponent
               [eventStream]="eventStream"></app-filter-plotted-events>
             </div>
           </div>
@@ -314,16 +346,16 @@
         <div class="clearfix mt-2">
           <!-- save -->
           <div class="float-left">
-            <button class="btn btn-primary" 
+            <button class="btn btn-primary"
             (click)="onSave()">Save</button>
             <button class="btn btn-secondary ml-4"
             (click)="onDuplicate()">Duplicate</button>
           </div>
-          
+
           <!-- cancel -->
           <button class="btn btn-secondary float-right"
-                  (click)="eventStreamModal.hide()">
-                  Cancel</button>
+            (click)="eventStreamModal.hide()">
+          Cancel</button>
         </div>
       </div>
     </div>

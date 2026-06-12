@@ -1,264 +1,297 @@
 
 
-<div *ngIf="plotSelectors.isPlotEmpty$ | async">
-  <p class="empty-plot"><fa-icon [icon]="['fas', 'chart-line']" size="2x"></fa-icon></p>
-  <p class="lead empty-plot"> no elements plotted</p>
-</div>
+@if (plotSelectors.isPlotEmpty$ | async) {
+  <div>
+    <p class="empty-plot"><fa-icon [icon]="['fas', 'chart-line']" size="2x"></fa-icon></p>
+    <p class="lead empty-plot"> no elements plotted</p>
+  </div>
+}
 
 <!-- Left Axis -->
-<div *ngIf="(plotSelectors.leftElements$ | async)?.length>0">
-  <div class="row justify-content-between section-title top lead no-gutters">
+@if ((plotSelectors.leftElements$ | async)?.length>0) {
+  <div>
+    <div class="row justify-content-between section-title top lead no-gutters">
       <div class="col">
         <!-- Expand/Collapse Axis Settings-->
-        <fa-icon [icon]="(plotSelectors.showLeftAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']" 
-          size="lg" class="icon-expand" 
-          (click)="plotService.toggleLeftAxisSettings()"></fa-icon>
+        <fa-icon [icon]="(plotSelectors.showLeftAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']"
+          size="lg" class="icon-expand"
+        (click)="plotService.toggleLeftAxisSettings()"></fa-icon>
         Left Axis
       </div>
       <div class="col">
-          <!-- Autoscale Axis-->
-          <button class="btn autoscale"
-            (click)="plotService.autoScaleAxis('left')">
-            <fa-icon [icon]="['fas', 'arrows-alt-v']"  [fixedWidth]="true"></fa-icon> auto </button>
-      </div>
-    </div>
-  </div>
-  <!-- only shown if axis settings are displayed -->
-  <div @slideUpDown *ngIf="(plotSelectors.showLeftAxisSettings$ | async)">
-    <app-axis-settings
-      [settings]="plotSelectors.leftAxisSettingsMutable$ | async" 
-      [yaxis-settings]="true"  
-      (changed)="plotService.setLeftAxisSettings($event)"></app-axis-settings>
-    
-  </div>
-  <app-plotted-elements
-    class="plotted-element"
-    *ngFor="let element of plotSelectors.leftElements$ | async;"
-    [element]="element"
-    [axis]="'left'">
-  </app-plotted-elements>
-<div>
-
-
-
-
-<!-- Right Axis -->
-<div *ngIf="(plotSelectors.rightElements$ | async)?.length>0">
-  <div class="row justify-content-between section-title lead no-gutters">
-    <div class="col">
-      <!-- Expand/Collapse Axis Settings-->
-      <fa-icon [icon]="(plotSelectors.showRightAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']" 
-        size="lg" class="icon-expand" 
-        (click)="plotService.toggleRightAxisSettings()"></fa-icon>
-      Right Axis
-    </div>
-    <div class="col">
         <!-- Autoscale Axis-->
-        <button class="btn btn-primary autoscale"
-          (click)="plotService.autoScaleAxis('right')">
+        <button class="btn autoscale"
+          (click)="plotService.autoScaleAxis('left')">
           <fa-icon [icon]="['fas', 'arrows-alt-v']"  [fixedWidth]="true"></fa-icon> auto </button>
+        </div>
+      </div>
     </div>
-  </div>
+  }
   <!-- only shown if axis settings are displayed -->
-  <div @slideUpDown *ngIf="(plotSelectors.showRightAxisSettings$ | async)">
-    <app-axis-settings *ngIf="(plotSelectors.rightElements$ | async)?.length>0" 
-      [settings]="plotSelectors.rightAxisSettingsMutable$ | async"
-      [yaxis-settings]="true"
-      (changed)="plotService.setRightAxisSettings($event)"></app-axis-settings>
-    
-  </div>
-  <app-plotted-elements 
-    class="plotted-element"
-    *ngFor="let element of plotSelectors.rightElements$ | async"
-    [element]="element"
-    [axis]="'right'">
-  </app-plotted-elements>
-</div>
+  @if ((plotSelectors.showLeftAxisSettings$ | async)) {
+    <div @slideUpDown>
+      <app-axis-settings
+        [settings]="plotSelectors.leftAxisSettingsMutable$ | async"
+        [yaxis-settings]="true"
+      (changed)="plotService.setLeftAxisSettings($event)"></app-axis-settings>
+    </div>
+  }
+  @for (element of plotSelectors.leftElements$ | async; track element) {
+    <app-plotted-elements
+      class="plotted-element"
+      [element]="element"
+      [axis]="'left'">
+    </app-plotted-elements>
+  }
+  <div>
 
 
 
-<!-- Time Axis -->
-<div class="row justify-content-between section-title lead no-gutters">
-  <div class="col">
-    <!-- Expand/Collapse Axis Settings-->
-    <fa-icon [icon]="(plotSelectors.showTimeAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']" 
-      size="lg" class="icon-expand" 
-      (click)="plotService.toggleTimeAxisSettings()"></fa-icon>
-    Time Axis
-  </div>
-  <div class="col">
-    <!-- Autoscale Axis-->
-    <button class="btn btn-primary autoscale" (click)="plotService.autoScaleTime()">
-      <fa-icon [icon]="['fas', 'arrows-alt-h']"  [fixedWidth]="true"></fa-icon> auto
-    </button>
-  </div>
-</div>
-<div @slideUpDown
-  *ngIf="(plotSelectors.showTimeAxisSettings$ | async)">
-  <app-axis-settings 
-      [settings]="plotSelectors.timeAxisSettingsMutable$ | async"
-      [yaxis-settings]="false"
-      (changed)="plotService.setTimeAxisSettings($event)">
-  </app-axis-settings>
-</div>
 
-<!-- Events -->
-<div *ngIf="(plotSelectors.plottedEventStreams$ | async)?.length>0">
-  <div class="row justify-content-between section-title top lead no-gutters">
-    <div class="col">Events</div>
-    <div class="col">
-      <!-- Enable Event Selection-->
-      <button class="btn btn-primary autoscale"
-        *ngIf = "!(eventSelectorSelectors.enabled$ | async)"
-        (click)="eventSelectorService.startEventSelector()"
-        [disabled] = "toolModeSelected$ | async">
-        select
-      </button>
-      <!-- Stop Annotating -->
-      <div *ngIf="eventSelectorSelectors.enabled$ | async">
-        <button class="btn btn-danger exit-annotation"
-          
-          (click)="eventSelectorService.exitEventSelector()">
-        exit
-        </button>
-        <!-- Clear Annotations -->
-        <button class="btn btn-primary icon" (click)="eventSelectorService.clearEventSelection()">
-          <fa-icon [icon]="['fas', 'trash-alt']" tooltip='clear selection' [fixedWidth]="true"></fa-icon>
-        </button>
-        <!-- Download Annotations -->
+    <!-- Right Axis -->
+    @if ((plotSelectors.rightElements$ | async)?.length>0) {
+      <div>
+        <div class="row justify-content-between section-title lead no-gutters">
+          <div class="col">
+            <!-- Expand/Collapse Axis Settings-->
+            <fa-icon [icon]="(plotSelectors.showRightAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']"
+              size="lg" class="icon-expand"
+            (click)="plotService.toggleRightAxisSettings()"></fa-icon>
+            Right Axis
+          </div>
+          <div class="col">
+            <!-- Autoscale Axis-->
+            <button class="btn btn-primary autoscale"
+              (click)="plotService.autoScaleAxis('right')">
+              <fa-icon [icon]="['fas', 'arrows-alt-v']"  [fixedWidth]="true"></fa-icon> auto </button>
+            </div>
+          </div>
+          <!-- only shown if axis settings are displayed -->
+          @if ((plotSelectors.showRightAxisSettings$ | async)) {
+            <div @slideUpDown>
+              @if ((plotSelectors.rightElements$ | async)?.length>0) {
+                <app-axis-settings
+                  [settings]="plotSelectors.rightAxisSettingsMutable$ | async"
+                  [yaxis-settings]="true"
+                (changed)="plotService.setRightAxisSettings($event)"></app-axis-settings>
+              }
+            </div>
+          }
+          @for (element of plotSelectors.rightElements$ | async; track element) {
+            <app-plotted-elements
+              class="plotted-element"
+              [element]="element"
+              [axis]="'right'">
+            </app-plotted-elements>
+          }
+        </div>
+      }
 
-        <ng-container  *ngrxLet="this.plotSelectors.nilms$ as nilms">
-          <ng-container  *ngrxLet="this.plotSelectors.eventStreams$ as eventStreams">
-            <ng-container *ngrxLet="this.eventSelectorSelectors.selectedEventsSet$ as eventsSet">
-              <button class="btn btn-primary icon" (click)="downloadEvents(eventsSet, eventStreams, nilms)">
-                <fa-icon [icon]="['fas', 'download']"  tooltip='download selection' [fixedWidth]="true"></fa-icon>
+
+
+      <!-- Time Axis -->
+      <div class="row justify-content-between section-title lead no-gutters">
+        <div class="col">
+          <!-- Expand/Collapse Axis Settings-->
+          <fa-icon [icon]="(plotSelectors.showTimeAxisSettings$|async)?['fas','caret-down']:['fas','caret-right']"
+            size="lg" class="icon-expand"
+          (click)="plotService.toggleTimeAxisSettings()"></fa-icon>
+          Time Axis
+        </div>
+        <div class="col">
+          <!-- Autoscale Axis-->
+          <button class="btn btn-primary autoscale" (click)="plotService.autoScaleTime()">
+            <fa-icon [icon]="['fas', 'arrows-alt-h']"  [fixedWidth]="true"></fa-icon> auto
+          </button>
+        </div>
+      </div>
+      @if ((plotSelectors.showTimeAxisSettings$ | async)) {
+        <div @slideUpDown
+          >
+          <app-axis-settings
+            [settings]="plotSelectors.timeAxisSettingsMutable$ | async"
+            [yaxis-settings]="false"
+            (changed)="plotService.setTimeAxisSettings($event)">
+          </app-axis-settings>
+        </div>
+      }
+
+      <!-- Events -->
+      @if ((plotSelectors.plottedEventStreams$ | async)?.length>0) {
+        <div>
+          <div class="row justify-content-between section-title top lead no-gutters">
+            <div class="col">Events</div>
+            <div class="col">
+              <!-- Enable Event Selection-->
+              @if (!(eventSelectorSelectors.enabled$ | async)) {
+                <button class="btn btn-primary autoscale"
+                  (click)="eventSelectorService.startEventSelector()"
+                  [disabled] = "toolModeSelected$ | async">
+                  select
+                </button>
+              }
+              <!-- Stop Annotating -->
+              @if (eventSelectorSelectors.enabled$ | async) {
+                <div>
+                  <button class="btn btn-danger exit-annotation"
+                    (click)="eventSelectorService.exitEventSelector()">
+                    exit
+                  </button>
+                  <!-- Clear Annotations -->
+                  <button class="btn btn-primary icon" (click)="eventSelectorService.clearEventSelection()">
+                    <fa-icon [icon]="['fas', 'trash-alt']" tooltip='clear selection' [fixedWidth]="true"></fa-icon>
+                  </button>
+                  <!-- Download Annotations -->
+                  <ng-container  *ngrxLet="this.plotSelectors.nilms$ as nilms">
+                    <ng-container  *ngrxLet="this.plotSelectors.eventStreams$ as eventStreams">
+                      <ng-container *ngrxLet="this.eventSelectorSelectors.selectedEventsSet$ as eventsSet">
+                        <button class="btn btn-primary icon" (click)="downloadEvents(eventsSet, eventStreams, nilms)">
+                          <fa-icon [icon]="['fas', 'download']"  tooltip='download selection' [fixedWidth]="true"></fa-icon>
+                        </button>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              }
+            </div>
+          </div>
+          <!-- Event selection instructions -->
+          @if (eventSelectorSelectors.enabled$ | async) {
+            <div class="annotation-instructions">
+              drag right to add, left to remove <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon>
+            </div>
+          }
+          @for (eventStream of plotSelectors.plottedEventStreams$ | async; track eventStream) {
+            <app-plotted-events
+              class="plotted-element"
+              [eventStream]="eventStream">
+            </app-plotted-events>
+          }
+        </div>
+      }
+
+      <!-- Plot Annotations -->
+      <div class="row justify-content-between section-title lead no-gutters">
+        <div class="col">
+          Annotations
+        </div>
+        <div class="col">
+          <!-- Start Annotating -->
+          @if (!(annotationSelectors.enabled$ | async)) {
+            <button class="btn btn-primary autoscale"
+              [disabled]="toolModeSelected$ | async"
+              (click)="annotationUIService.startAnnotation()">
+              <fa-icon [icon]="['fas', 'plus']"  [fixedWidth]="true"></fa-icon> create
+            </button>
+          }
+          <!-- Stop Annotating -->
+          @if (annotationSelectors.enabled$ | async) {
+            <button class="btn btn-danger exit-annotation"
+              (click)="annotationUIService.cancelAnnotation()">
+              exit
+            </button>
+          }
+          <!-- Hide Annotation -->
+          @if ((annotationSelectors.selectedAnnotationId$ | async) != null) {
+            <button class="btn btn-danger hide-annotation"
+              (click)="annotationUIService.hideAnnotation()">
+              hide
+            </button>
+          }
+
+        </div>
+      </div>
+      <!-- Annotation instructions -->
+      @if (annotationSelectors.enabled$ | async) {
+        <div class="annotation-instructions">
+          click or drag on plot to annotate <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon>
+        </div>
+      }
+      <div class="filter-annotations">
+        <span class="ml-4">Search: </span>
+        <input [(ngModel)]="filterText"
+          type="text" class="ml-1" placeholder="filter">
+      </div>
+
+      @for (block of annotationMap$ | async; track block) {
+        <div >
+          <div class="annotated-stream">
+            <fa-icon [icon]="['fas', 'database']"></fa-icon> {{block.stream.path}}
+            @if (!block.stream.reloading_annotations) {
+              <fa-icon [icon]="['fas', 'sync-alt']" class="icon-button refresh"
+              (click)="annotationService.reloadAnnotations(block.stream.id)"></fa-icon>
+            }
+            @if (block.stream.reloading_annotations) {
+              <fa-icon [icon]="['fas', 'sync-alt']" animation="spin" class="refreshing"
+              ></fa-icon>
+            }
+          </div>
+          @if (block.annotations.length==0) {
+            <div class="no-annotations">none</div>
+          }
+          <div class="annotation-list">
+            @for (annotation of block.annotations | annotationFilter: filterText; track annotation) {
+              <div
+                class="annotation"
+                (click)="annotationUIService.selectAnnotation(annotation)"
+                class = "annotation"
+                [ngClass]="{selected: (annotationSelectors.selectedAnnotationId$ | async) == annotation.id}">
+                <div class="annotation-title clear-float">
+                  <span class="annotation-date">{{annotation.start | date:'HH:mm MMM d, y'}}</span>
+                  <span class="font-weight-bold" [innerHTML]="annotation.title | highlightFilter : filterText"></span>
+                  @if (block.editable) {
+                    <fa-icon [icon]="['fas', 'edit']" class="delete"
+                    (click)="editAnnotation($event, annotation)"></fa-icon>
+                  }
+                </div>
+                <div class='text-muted'> {{annotation.content}} </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ====== edit annotation modal ====== -->
+      <div class="modal fade" bsModal #annotationEditModal="bs-modal"
+        [config]="{backdrop: false}"
+        tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!-- modal title bar -->
+              <h4 class="modal-title float-left">
+              Edit Annotation</h4>
+              <button type="button" class="close float-right" aria-label="Close" (click)="annotationModal.hide()">
+                <span aria-hidden="true">&times;</span>
               </button>
-            </ng-container>
-          </ng-container>
-          </ng-container>
-      </div>
-    </div>
-  </div>
-  <!-- Event selection instructions -->
-  <div *ngIf="eventSelectorSelectors.enabled$ | async" class="annotation-instructions">
-    drag right to add, left to remove <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon> 
-  </div>
-  <app-plotted-events
-    class="plotted-element"
-    *ngFor="let eventStream of plotSelectors.plottedEventStreams$ | async"
-    [eventStream]="eventStream">
-  </app-plotted-events>
-</div>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label class="control-label" for="name">Title</label>
+                  <input class="form-control" name="title"
+                    [(ngModel)]="selectedAnnotation.title">
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="description">Content</label>
+                  <input class="form-control" name="content" placeholder="optional"
+                    [(ngModel)]="selectedAnnotation.content">
+                </div>
+                <!-- Save and Cancel buttons -->
+                <div class="clearfix">
 
-<!-- Plot Annotations -->
-<div class="row justify-content-between section-title lead no-gutters">
-  <div class="col">
-    Annotations
-  </div>
-  <div class="col">
-    <!-- Start Annotating -->
-    <button class="btn btn-primary autoscale"
-      *ngIf="!(annotationSelectors.enabled$ | async)"
-      [disabled]="toolModeSelected$ | async"
-      (click)="annotationUIService.startAnnotation()">
-      <fa-icon [icon]="['fas', 'plus']"  [fixedWidth]="true"></fa-icon> create 
-    </button>
-    <!-- Stop Annotating -->
-    <button class="btn btn-danger exit-annotation"
-      *ngIf="annotationSelectors.enabled$ | async"
-      (click)="annotationUIService.cancelAnnotation()">
-      exit
-    </button>
-    <!-- Hide Annotation -->
-    <button class="btn btn-danger hide-annotation"
-      *ngIf="(annotationSelectors.selectedAnnotationId$ | async) != null"
-      (click)="annotationUIService.hideAnnotation()">
-      hide
-    </button>
-
-  </div>
-</div>
-<!-- Annotation instructions -->
-<div *ngIf="annotationSelectors.enabled$ | async" class="annotation-instructions">
-  click or drag on plot to annotate <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon> 
-
-</div>
-<div class="filter-annotations">
-  <span class="ml-4">Search: </span>
-  <input [(ngModel)]="filterText"
-    type="text" class="ml-1" placeholder="filter">
-</div>
-
-<div *ngFor="let block of annotationMap$ | async" >
-  <div class="annotated-stream">
-      <fa-icon [icon]="['fas', 'database']"></fa-icon> {{block.stream.path}}
-      <fa-icon [icon]="['fas', 'sync-alt']" class="icon-button refresh"
-        *ngIf="!block.stream.reloading_annotations"
-        (click)="annotationService.reloadAnnotations(block.stream.id)"></fa-icon>
-      <fa-icon [icon]="['fas', 'sync-alt']" animation="spin" class="refreshing" 
-        *ngIf="block.stream.reloading_annotations"></fa-icon>
-
-  </div>
-  <div *ngIf="block.annotations.length==0" class="no-annotations">none</div>
-  <div class="annotation-list">
-    <div 
-      *ngFor="let annotation of block.annotations | annotationFilter: filterText" class="annotation"
-      (click)="annotationUIService.selectAnnotation(annotation)"
-      class = "annotation"
-      [ngClass]="{selected: (annotationSelectors.selectedAnnotationId$ | async) == annotation.id}">
-      <div class="annotation-title clear-float">
-        <span class="annotation-date">{{annotation.start | date:'HH:mm MMM d, y'}}</span>
-        <span class="font-weight-bold" [innerHTML]="annotation.title | highlightFilter : filterText"></span>
-        <fa-icon *ngIf="block.editable" [icon]="['fas', 'edit']" class="delete"
-          (click)="editAnnotation($event, annotation)"></fa-icon>
-      </div>
-      
-      <div class='text-muted'> {{annotation.content}} </div>
-    </div>
-  </div>
-</div>
-
-<!-- ====== edit annotation modal ====== -->
-<div class="modal fade" bsModal #annotationEditModal="bs-modal" 
-     [config]="{backdrop: false}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <!-- modal title bar -->
-        <h4 class="modal-title float-left">
-          Edit Annotation</h4>
-        <button type="button" class="close float-right" aria-label="Close" (click)="annotationModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label class="control-label" for="name">Title</label>
-            <input class="form-control" name="title"
-                  [(ngModel)]="selectedAnnotation.title">
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="description">Content</label>
-            <input class="form-control" name="content" placeholder="optional"
-                  [(ngModel)]="selectedAnnotation.content">
-          </div>
-          <!-- Save and Cancel buttons -->
-          <div class="clearfix">
-            
-            <!-- save -->
-            <button class="btn btn-primary float-left popup" 
+                  <!-- save -->
+                  <button class="btn btn-primary float-left popup"
                     [disabled]="selectedAnnotation.title==''"
-                    (click)="saveAnnotation()">Save</button>
-            <!-- delete -->
-            <button class="btn btn-danger float-right popup"
+                  (click)="saveAnnotation()">Save</button>
+                  <!-- delete -->
+                  <button class="btn btn-danger float-right popup"
                     (click)="deleteAnnotation()">
                     <fa-icon [icon]="['fas', 'trash-alt']"></fa-icon> Delete</button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-          </form>
-      </div>
-    </div>
-  </div>
-</div>
+        </div>

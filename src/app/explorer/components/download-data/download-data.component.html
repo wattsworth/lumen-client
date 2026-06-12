@@ -1,24 +1,23 @@
 <ul class="list-group">
 
-<li class="list-group-item"
-  *ngFor="let item of downloadInfo$ | async">
-  
-  <button class="btn btn-primary float-right" (click)="download(item.stream)">
-      <fa-icon [icon]="['fas', 'download']"></fa-icon> download
-  </button>
-    
-  <h4 class="list-group-item-heading">
-      <fa-icon [icon]="['fas', 'database']"></fa-icon> {{item.stream.name}} <span class="installation">&#64; {{item.installation_name}}</span>
-  </h4>
-  <dl class="dl-horizontal">
-    <dt class="dt-left">URL</dt><dd class="dd-small">{{item.installation_url}}</dd>
-    <dt class="dt-left">Path</dt><dd class="dd-small">{{item.stream.path}}</dd>
-    <dt class="dt-left">Points</dt><dd class="dd-small">
-      <input type="number" min="1" #box (blur)="setResolution(+(box.value))" placeholder="maximum">
-    </dd>
-  </dl>
-
-</li>
+  @for (item of downloadInfo$ | async; track item) {
+    <li class="list-group-item"
+      >
+      <button class="btn btn-primary float-right" (click)="download(item.stream)">
+        <fa-icon [icon]="['fas', 'download']"></fa-icon> download
+      </button>
+      <h4 class="list-group-item-heading">
+        <fa-icon [icon]="['fas', 'database']"></fa-icon> {{item.stream.name}} <span class="installation">&#64; {{item.installation_name}}</span>
+      </h4>
+      <dl class="dl-horizontal">
+        <dt class="dt-left">URL</dt><dd class="dd-small">{{item.installation_url}}</dd>
+        <dt class="dt-left">Path</dt><dd class="dd-small">{{item.stream.path}}</dd>
+        <dt class="dt-left">Points</dt><dd class="dd-small">
+        <input type="number" min="1" #box (blur)="setResolution(+(box.value))" placeholder="maximum">
+      </dd>
+    </dl>
+  </li>
+}
 </ul>
 <!-- invisible link to trigger download -->
 <a #link></a>
