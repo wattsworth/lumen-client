@@ -170,11 +170,15 @@ export class FileTreeComponent implements OnInit {
   mapJouleModules(
     appIds: Array<number>,
     dataApps: Dictionary<IDataApp>
-  ): DbTreeNode[]{
+  ): IModuleNode[]{
     return appIds.map(id => dataApps[id])
     .filter(app => app !== undefined)
     .map(app => {
+<<<<<<< HEAD
       let node:IDbModuleNode = {
+=======
+      let node:IModuleNode = {
+>>>>>>> angular-upgrade
       id: 'a'+app.id,
       type: 'dataApp',
       name: app.name,
@@ -182,7 +186,11 @@ export class FileTreeComponent implements OnInit {
       children: null,
       hasChildren: false
       }
+<<<<<<< HEAD
       return node
+=======
+      return node;
+>>>>>>> angular-upgrade
     })
   }
 
@@ -324,6 +332,10 @@ export interface DbTreeNode {
   priveleged?: boolean;
   nilmId?: number;
 };
+export interface IModuleNode 
+  extends DbTreeNode{
+  link: string;
+}
 export interface IEventStreamNode 
   extends DbTreeNode{
   stream: IEventStream;

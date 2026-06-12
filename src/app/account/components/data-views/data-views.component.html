@@ -1,25 +1,30 @@
-<div *ngFor="let view of dataViews$ | async" class="clearfix">
-  <!-- add icon to indicate the home view -->
-  <fa-icon [icon]="['fas', 'home']" *ngIf="view.home"></fa-icon>
-  <!-- view title -->
-  <span [innerHTML]="formatTitle(view) | ellipsis:70"></span>
-  <!-- view edit / delete buttons -->
-  <span class="float-right">
-    <fa-icon [icon]="['fas', 'edit']"   class="icon edit" (click)="editDataView(view)"></fa-icon>
-    <fa-icon [icon]="['fas', 'times']" class="icon delete" (click)="dataViewService.deleteDataView(view)"></fa-icon>
-  </span>
-  
-</div>
+@for (view of dataViews$ | async; track view) {
+  <div class="clearfix">
+    <!-- add icon to indicate the home view -->
+    @if (view.home) {
+      <fa-icon [icon]="['fas', 'home']"></fa-icon>
+    }
+    <!-- view title -->
+    <span [innerHTML]="formatTitle(view) | ellipsis:70"></span>
+    <!-- view edit / delete buttons -->
+    <span class="float-right">
+      <fa-icon [icon]="['fas', 'edit']"   class="icon edit" (click)="editDataView(view)"></fa-icon>
+      <fa-icon [icon]="['fas', 'times']" class="icon delete" (click)="dataViewService.deleteDataView(view)"></fa-icon>
+    </span>
+  </div>
+}
 <!-- ...or a message if the user doesn't own any groups -->
-<div class="alert alert-info" *ngIf="(dataViews$ | async).length==0">
+@if ((dataViews$ | async).length==0) {
+  <div class="alert alert-info">
   You do not have any saved views</div>
+}
 
 <!-- ====== update data view modal ====== -->
-<div class="modal fade" bsModal #editDataViewModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true"
-     >
+<div class="modal fade" bsModal #editDataViewModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true"
+  >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -30,12 +35,13 @@
         </button>
       </div>
       <div class="modal-body">
+        @if (activeView!==undefined) {
           <app-data-view-form #dataViewForm
-            *ngIf="activeView!==undefined"
-            [view]="activeView" 
-            (save)="updateDataView($event)" 
-            (cancel)="editDataViewModal.hide()"></app-data-view-form>
-          
+            [view]="activeView"
+            (save)="updateDataView($event)"
+          (cancel)="editDataViewModal.hide()"></app-data-view-form>
+        }
+
       </div>
     </div>
   </div>

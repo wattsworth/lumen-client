@@ -96,12 +96,12 @@ import { CdkTreeModule } from '@angular/cdk/tree';
     NgSelectModule,
     SharedModule,
     FontAwesomeModule,
-    ModalModule.forRoot(),
-    TabsModule.forRoot(),
-    TooltipModule.forRoot(),
-    BsDropdownModule.forRoot(),
-    BsDatepickerModule.forRoot(),
-    TimepickerModule.forRoot()
+    ModalModule,
+    TabsModule,
+    TooltipModule,
+    BsDropdownModule,
+    BsDatepickerModule,
+    TimepickerModule
   ],
   declarations: [
     COMPONENTS,

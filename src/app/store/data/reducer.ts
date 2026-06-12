@@ -175,7 +175,7 @@ export const dbElementReducer = createReducer(
 
 //  -----------  User Reducer --------------
 export const userReducer = createReducer(
-  userAdapter.getInitialState({
+  userAdapter.getInitialState<types.IUserState>({
     current: null,
     new_installation_token: "",
     installation_token_available: false
@@ -203,7 +203,7 @@ export const userReducer = createReducer(
 
 // ------ User Group Reducer -----
 export const userGroupReducer = createReducer(
-  userGroupAdapter.getInitialState({owner: [], member: []}),
+  userGroupAdapter.getInitialState<types.IUserGroupState>({owner: [], member: []}),
   //RECEIVE generic groups
   on(actions.receiveGroups, (state: types.IUserGroupState, {groups}) => userGroupAdapter.upsertMany(groups, state)),
   //RECEIVE owner group

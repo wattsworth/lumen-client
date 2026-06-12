@@ -17,24 +17,26 @@
   <!-- Password -->
   <div class="form-group" [class.has-error]="!form.get('passwords').get('password').valid">
     <label class="control-label" for="password">Password </label>
-    <input class="form-control" id="password" type="password" 
+    <input class="form-control" id="password" type="password"
       [formControl]="form.get('passwords').get('password') | formControl">
   </div>
   <!-- Confirm Password -->
   <div class="form-group" [class.has-error]="!form.get('passwords').valid">
     <label class="control-label" for="password_confirmation">Confirm Password</label>
-    <input class="form-control" id="password_confirmation" type="password" 
+    <input class="form-control" id="password_confirmation" type="password"
       [formControl]="form.get('passwords').get('password_confirmation')| formControl">
-    <span *ngIf="!form.get('passwords').valid" class="help-block danger">passwords must match</span>
+    @if (!form.get('passwords').valid) {
+      <span class="help-block danger">passwords must match</span>
+    }
   </div>
   <!-- Save and Cancel buttons -->
   <div class="clearfix">
     <!-- save -->
-    <button class="btn btn-primary float-left popup" 
-      [disabled]="form.valid==false" 
-      (click)="onSave(form.value)">Save</button>
+    <button class="btn btn-primary float-left popup"
+      [disabled]="form.valid==false"
+    (click)="onSave(form.value)">Save</button>
     <!-- cancel -->
     <button class="btn btn-secondary float-right popup" (click)="onCancel()">
-            Cancel</button>
+    Cancel</button>
   </div>
 </form>

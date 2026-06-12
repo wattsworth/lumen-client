@@ -2,11 +2,15 @@
   <div class="panel-title">Folder Properties</div>
   <dl class="row">
     <dt class="col-2 text-right">Time Range</dt>
-    <dd class="col-10" *ngIf="folder.size_on_disk>0">
+    @if (folder.size_on_disk>0) {
+      <dd class="col-10">
         {{folder.start_time/1e3 | date:"y MMM dd HH:mm:ss"}} &mdash;
         {{folder.end_time/1e3   | date:"y MMM dd HH:mm:ss"}}
-    </dd>
-    <dd class="col-10" *ngIf="folder.size_on_disk==0"> &mdash;</dd>
+      </dd>
+    }
+    @if (folder.size_on_disk==0) {
+      <dd class="col-10"> &mdash;</dd>
+    }
     <dt class="col-2 text-right">Size on Disk</dt>
     <dd class="col-10" >{{folder.size_on_disk | byteSize }}</dd>
   </dl>
@@ -18,24 +22,27 @@
     </div>
     <div class="form-group">
       <label for="folder-description">Description</label>
-      <input class="form-control" id="folder-description" 
-        placeholder="Description" type="text" 
+      <input class="form-control" id="folder-description"
+        placeholder="Description" type="text"
         [formControl]="form.controls['description'] | formControl">
     </div>
     <div class=" checkbox ">
       <label>
         <input id="folder-hidden " type="checkbox"
-        [formControl]="form.controls['hidden'] | formControl"> Hidden
-      </label>
-    </div>
-    <div class="form-group ">
-      <div class="float-left ">
-        <button class="btn btn-primary"
-          *ngIf="folder.locked" disabled>
+          [formControl]="form.controls['hidden'] | formControl"> Hidden
+        </label>
+      </div>
+      <div class="form-group ">
+        <div class="float-left ">
+          @if (folder.locked) {
+            <button class="btn btn-primary"
+              disabled>
           Locked</button>
-        <button type="submit " class="btn btn-primary" 
-          *ngIf="!folder.locked"
+        }
+        @if (!folder.locked) {
+          <button type="submit " class="btn btn-primary"
           [disabled]="!form.valid">Save</button>
+        }
       </div>
     </div>
   </form>

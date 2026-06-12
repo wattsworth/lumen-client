@@ -1,14 +1,17 @@
 <div class="jumbotron">
   <h1 class="display-4">{{app.name}}</h1>
   <hr class="my-4">
-  <div *ngIf="app.url==''" class="alert alert-warning">Apps are not available on this node. Apps reqiure a proxy server.</div>
-  <div *ngIf="app.url!=''">
-    <p>
-      One Time Link: <code>{{app.url}}</code>
-    </p>
-
-  <a href="{{app.url}}" target="_blank" class="btn btn-primary">Open App
-    <fa-icon [icon]="['fas', 'external-link-alt']" class="ml-2"></fa-icon></a>
+  @if (app.url=='') {
+    <div class="alert alert-warning">Apps are not available on this node. Apps reqiure a proxy server.</div>
+  }
+  @if (app.url!='') {
+    <div>
+      <p>
+        One Time Link: <code>{{app.url}}</code>
+      </p>
+      <a href="{{app.url}}" target="_blank" class="btn btn-primary">Open App
+        <fa-icon [icon]="['fas', 'external-link-alt']" class="ml-2"></fa-icon></a>
+      </div>
+    }
   </div>
-</div>
 

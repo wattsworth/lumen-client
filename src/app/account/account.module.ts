@@ -45,11 +45,11 @@ import { COMPONENTS } from './components';
     NgSelectModule,
     SharedModule,
     FontAwesomeModule,
-    PopoverModule.forRoot(),
-    BsDropdownModule.forRoot(),
-    ModalModule.forRoot(),
-    TooltipModule.forRoot(),
-    CarouselModule.forRoot()
+    PopoverModule,
+    BsDropdownModule,
+    ModalModule,
+    TooltipModule,
+    CarouselModule
   ],
   declarations: [
     COMPONENTS,

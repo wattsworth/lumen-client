@@ -28,6 +28,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
  } from '@fortawesome/free-solid-svg-icons'
 
 import { COMPONENTS } from './components';
+import { AdminTabComponent } from './tabs/admin/admin.tab';
+import { DatabaseTabComponent } from './tabs/database/database.tab';
 import { TABS } from './tabs';
 import { PIPES } from './pipes';
 import { InstallationPageComponent } from './pages';
@@ -38,6 +40,7 @@ import { EditModuleComponent } from './components/edit-module/edit-module.compon
 import { EditEventstreamComponent } from './components/edit-eventstream/edit-eventstream.component';
 import { CdkTreeModule } from '@angular/cdk/tree';
 
+//const TABSs = [AdminTabComponent, DatabaseTabComponent];
 @NgModule({
   imports: [
     CdkTreeModule,
@@ -48,10 +51,10 @@ import { CdkTreeModule } from '@angular/cdk/tree';
     NgSelectModule,
     SharedModule,
     FontAwesomeModule,
-    TooltipModule.forRoot(),
-    AlertModule.forRoot(),
-    TabsModule.forRoot(),
-    ModalModule.forRoot()
+    TooltipModule,
+    AlertModule,
+    TabsModule,
+    ModalModule
   ],
   declarations: [
     COMPONENTS,

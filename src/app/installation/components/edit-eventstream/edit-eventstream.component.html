@@ -1,33 +1,39 @@
 <div class="col-sm-12">
-    <div class="panel-title">Stream Properties</div>
-    <dl class="row">
-      <dt class="col-2 text-right">Time Range</dt>
-       <dd class="col-10" *ngIf="eventStream.start_time">
-          {{eventStream.start_time/1e3 | date:"y MMM dd HH:mm:ss"}} &mdash;
-          {{eventStream.end_time/1e3   | date:"y MMM dd HH:mm:ss"}}
+  <div class="panel-title">Stream Properties</div>
+  <dl class="row">
+    <dt class="col-2 text-right">Time Range</dt>
+    @if (eventStream.start_time) {
+      <dd class="col-10">
+        {{eventStream.start_time/1e3 | date:"y MMM dd HH:mm:ss"}} &mdash;
+        {{eventStream.end_time/1e3   | date:"y MMM dd HH:mm:ss"}}
       </dd>
-      <dd class="col-10" *ngIf="!eventStream.start_time">
-         &mdash;
-     </dd>
-      <dt class="col-2 text-right">Events</dt>
-      <dd class="col-10">{{eventStream.event_count}}</dd>
-      <dt class="col-2 text-right">Database Path</dt>
-      <dd class="col-10">{{eventStream.path}}</dd>
-    </dl>
-    <div class="panel-title">Event Fields</div>
+    }
+    @if (!eventStream.start_time) {
+      <dd class="col-10">
+        &mdash;
+      </dd>
+    }
+    <dt class="col-2 text-right">Events</dt>
+    <dd class="col-10">{{eventStream.event_count}}</dd>
+    <dt class="col-2 text-right">Database Path</dt>
+    <dd class="col-10">{{eventStream.path}}</dd>
+  </dl>
+  <div class="panel-title">Event Fields</div>
 
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Data Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let field of eventStream.event_fields | keyvalue">
-            <td>{{field.key}}</td>
-            <td><pre>{{field.value}}</pre></td>
-          </tr>
-        </tbody>
-    </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Data Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (field of eventStream.event_fields | keyvalue; track field) {
+        <tr>
+          <td>{{field.key}}</td>
+          <td><pre>{{field.value}}</pre></td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

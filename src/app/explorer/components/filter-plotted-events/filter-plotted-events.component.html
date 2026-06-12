@@ -1,83 +1,102 @@
-<div *ngIf="showErrorMsg" class="text-danger">Invalid Filter Specification</div>
-<div *ngFor="let filterGroup of filterGroupsForm.controls; let i=index" >
+@if (showErrorMsg) {
+  <div class="text-danger">Invalid Filter Specification</div>
+}
+@for (filterGroup of filterGroupsForm.controls; track filterGroup; let i = $index) {
+  <div >
     <div  class="card">
-        <div class="card-body filter">
-            <div *ngFor = "let filter of filterGroup.controls; let j=index">
-                <div [formGroup]="filter" class="form-row">
-                    <div class="col-1">
-                        <fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="removeClause(i,j)"></fa-icon>
-                    </div>
-                    <div class="col-3">
-                        <input type="text" class="form-control" formControlName="key" placeholder="key" [attr.list]="'eventfields'+eventStream.id" >
-                    </div>
-                    <div class="col-3">
-                            <ng-select appearance="outline" formControlName="comparison" [searchable]="false" [clearable]="false">
-                            <ng-option value="eq">
-                                <fa-icon [icon]="['fas', 'equals']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="neq">
-                                <fa-icon [icon]="['fas', 'not-equal']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="gt">
-                                <fa-icon [icon]="['fas', 'greater-than']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="gte">
-                                <fa-icon [icon]="['fas', 'greater-than-equal']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="lt">
-                                <fa-icon [icon]="['fas', 'less-than']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="lte">
-                                <fa-icon [icon]="['fas', 'less-than-equal']"  [fixedWidth]="true"></fa-icon>
-                            </ng-option>
-                            <ng-option value="is">
-                                is
-                            </ng-option>
-                            <ng-option value="not">
-                                not
-                            </ng-option>
-                            <ng-option value="like">
-                                like
-                            </ng-option>
-                            <ng-option value="unlike">
-                                unlike
-                            </ng-option>
-                            </ng-select>
-                    </div>
-                    <div class="col-3">
-                        <!-- use the text field 'key' to look up the associated datalist for category types-->
-                        <input type="text" class="form-control" formControlName="value" placeholder="value"
-                            [attr.list]="'eventfield-categories'+eventStream.id+'-'+filter.controls['key'].value">
-                        <div *ngIf="filter.errors != null && filter.errors['valueError'] && (filter.touched || filter.dirty)" 
-                        class="text-danger">
-                            must be numeric
-                        </div>
-                    </div>
-                    
-                    <div *ngIf="j== filterGroup.controls.length-1" class="col-2">
-                        <button class="btn btn-outline-secondary" (click)="addClause(i)">AND</button>
-                    </div>
-                    <div *ngIf="j < filterGroup.controls.length-1" class="col-2 and">
-                        AND
-                    </div>
+      <div class="card-body filter">
+        @for (filter of filterGroup.controls; track filter; let j = $index) {
+          <div>
+            <div [formGroup]="filter" class="form-row">
+              <div class="col-1">
+                <fa-icon [icon]="['fas', 'times']" class="float-right icon-button right-button" (click)="removeClause(i,j)"></fa-icon>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" formControlName="key" placeholder="key" [attr.list]="'eventfields'+eventStream.id" >
+              </div>
+              <div class="col-3">
+                <ng-select appearance="outline" formControlName="comparison" [searchable]="false" [clearable]="false">
+                  <ng-option value="eq">
+                    <fa-icon [icon]="['fas', 'equals']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="neq">
+                    <fa-icon [icon]="['fas', 'not-equal']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="gt">
+                    <fa-icon [icon]="['fas', 'greater-than']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="gte">
+                    <fa-icon [icon]="['fas', 'greater-than-equal']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="lt">
+                    <fa-icon [icon]="['fas', 'less-than']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="lte">
+                    <fa-icon [icon]="['fas', 'less-than-equal']"  [fixedWidth]="true"></fa-icon>
+                  </ng-option>
+                  <ng-option value="is">
+                    is
+                  </ng-option>
+                  <ng-option value="not">
+                    not
+                  </ng-option>
+                  <ng-option value="like">
+                    like
+                  </ng-option>
+                  <ng-option value="unlike">
+                    unlike
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="col-3">
+                <!-- use the text field 'key' to look up the associated datalist for category types-->
+                <input type="text" class="form-control" formControlName="value" placeholder="value"
+                  [attr.list]="'eventfield-categories'+eventStream.id+'-'+filter.controls['key'].value">
+                @if (filter.errors != null && filter.errors['valueError'] && (filter.touched || filter.dirty)) {
+                  <div
+                    class="text-danger">
+                    must be numeric
+                  </div>
+                }
+              </div>
+              @if (j== filterGroup.controls.length-1) {
+                <div class="col-2">
+                  <button class="btn btn-outline-secondary" (click)="addClause(i)">AND</button>
                 </div>
+              }
+              @if (j < filterGroup.controls.length-1) {
+                <div class="col-2 and">
+                  AND
+                </div>
+              }
             </div>
-        </div>
+          </div>
+        }
+      </div>
     </div>
     <div class="container">
-    <div *ngIf="i < filterGroupsForm.controls.length -1" class="row">
-        <div class="col-5 border-top border-secondary or-bar"></div>
-        <div class="col-2 or">OR</div>
-        <div class="col-5 border-top border-secondary or-bar"></div>
-    </div>
-    </div>
-</div>
-
-<div *ngIf="filterGroupsForm.controls.length>0" class="container">
-    <div *ngIf="filterGroupsForm.controls.length > 0" class="row">
-        <div class="col-2 offset-5 or-btn-row">
-            <button class="btn btn-outline-secondary" (click)="addGroup()">OR</button>
+      @if (i < filterGroupsForm.controls.length -1) {
+        <div class="row">
+          <div class="col-5 border-top border-secondary or-bar"></div>
+          <div class="col-2 or">OR</div>
+          <div class="col-5 border-top border-secondary or-bar"></div>
         </div>
+      }
     </div>
-</div>
-<button *ngIf="filterGroupsForm.controls.length==0" class="btn btn-secondary" (click)="addGroup()">Add Filter</button>
+  </div>
+}
+
+@if (filterGroupsForm.controls.length>0) {
+  <div class="container">
+    @if (filterGroupsForm.controls.length > 0) {
+      <div class="row">
+        <div class="col-2 offset-5 or-btn-row">
+          <button class="btn btn-outline-secondary" (click)="addGroup()">OR</button>
+        </div>
+      </div>
+    }
+  </div>
+}
+@if (filterGroupsForm.controls.length==0) {
+  <button class="btn btn-secondary" (click)="addGroup()">Add Filter</button>
+}

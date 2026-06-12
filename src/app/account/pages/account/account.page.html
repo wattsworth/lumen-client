@@ -1,82 +1,85 @@
 <div class="page-title-bar">Account Settings
   <!-- help button -->
   <a href="{{helpUrl}}/account.html" target="_blank"
-   class="btn btn-success help-btn"><fa-icon [icon]="['fas', 'life-ring']"></fa-icon> Help </a>
-</div>
-<div class="row">
+    class="btn btn-success help-btn"><fa-icon [icon]="['fas', 'life-ring']"></fa-icon> Help </a>
+  </div>
+  <div class="row">
 
-  <!-- === LEFT COLUMN === -->
-  <div class="col-sm-3 col-md-4 border-right">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Account Details</h3>
+    <!-- === LEFT COLUMN === -->
+    <div class="col-sm-3 col-md-4 border-right">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Account Details</h3>
+        </div>
+        <div class="panel-body full-column">
+          <app-user-info></app-user-info>
+        </div>
       </div>
-      <div class="panel-body full-column">
-        <app-user-info></app-user-info>
+    </div>
+
+    <!-- === MIDDLE COLUMN === -->
+    <div class="col-sm-5 col-md-4 border-right">
+      <!-- Installations -->
+      <div class="panel panel-default border-bottom">
+        <div class="panel-heading">
+          <h3 class="panel-title">Installations</h3>
+        </div>
+        @if (accountSelectors.nilmsLoaded$ | async) {
+          <div
+            class="panel-body half-column">
+            <app-account-nilms></app-account-nilms>
+          </div>
+        } @else {
+          <div class="loading-container panel-body half-column">
+            <div class="loading">
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
+              <p class="lead">Loading...</p>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Data Views -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Saved Views</h3>
+        </div>
+        @if (accountSelectors.dataViewsLoaded$ | async) {
+          <div
+            class="panel-body half-column">
+            <app-data-views></app-data-views>
+          </div>
+        } @else {
+          <div class="loading-container panel-body half-column">
+            <div class="loading">
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
+              <p class="lead">Loading...</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- === RIGHT COLUMN === -->
+    <div class="col-sm-4">
+      <!-- User Groups -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Groups</h3>
+        </div>
+        @if (accountSelectors.userGroupsLoaded$ | async) {
+          <div
+            class="panel-body full-column">
+            <app-account-groups>
+            </app-account-groups>
+          </div>
+        } @else {
+          <div class="loading-container panel-body full-column">
+            <div class="loading">
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
+              <p class="lead">Loading...</p>
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>
-
-  <!-- === MIDDLE COLUMN === -->
-  <div class="col-sm-5 col-md-4 border-right">
-    <!-- Installations -->
-    <div class="panel panel-default border-bottom">
-      <div class="panel-heading">
-        <h3 class="panel-title">Installations</h3>
-      </div>
-      <div *ngIf="accountSelectors.nilmsLoaded$ | async; else loadingnilms"
-        class="panel-body half-column">
-        <app-account-nilms></app-account-nilms>
-      </div>
-      <ng-template #loadingnilms>
-        <div class="loading-container panel-body half-column">
-          <div class="loading">
-            <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
-            <p class="lead">Loading...</p>
-          </div>
-        </div>
-      </ng-template>
-    </div>
-    <!-- Data Views -->
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Saved Views</h3>
-      </div>
-      <div *ngIf="accountSelectors.dataViewsLoaded$ | async; else loadingviews"
-        class="panel-body half-column">
-        <app-data-views></app-data-views>
-      </div>
-      <ng-template #loadingviews>
-        <div class="loading-container panel-body half-column">
-          <div class="loading">
-            <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
-            <p class="lead">Loading...</p>
-          </div>
-        </div>
-      </ng-template>
-    </div>
-  </div>
-
-  <!-- === RIGHT COLUMN === -->
-  <div class="col-sm-4">
-    <!-- User Groups -->
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Groups</h3>
-      </div>
-      <div *ngIf="accountSelectors.userGroupsLoaded$ | async; else loadinggroups"
-        class="panel-body full-column">
-        <app-account-groups>
-        </app-account-groups>
-      </div>
-      <ng-template #loadinggroups>
-        <div class="loading-container panel-body full-column">
-          <div class="loading">
-            <fa-icon [icon]="['fas', 'spinner']" animation="spin"  size="4x"></fa-icon>
-            <p class="lead">Loading...</p>
-          </div>
-        </div>
-      </ng-template>
-    </div>
-  </div>
-</div>

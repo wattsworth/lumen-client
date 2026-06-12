@@ -1,6 +1,8 @@
 
-<span *ngIf="(userId$ | async)!=null" class="float-right">
-  <button class="btn" [routerLink]="['/account']">
+@if ((userId$ | async)!=null) {
+  <span class="float-right">
+    <button class="btn" [routerLink]="['/account']">
     my account</button>
-  <a href="/" class="btn btn-link btn-header" (click)="logout()">logout</a>
-</span>
+    <a href="/" class="btn btn-link btn-header" (click)="logout()">logout</a>
+  </span>
+}

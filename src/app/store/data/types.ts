@@ -183,7 +183,7 @@ export interface IUser {
   email: string;
 }
 export interface IUserState extends EntityState<IUser> { 
-  current: number;
+  current: number | null;
   new_installation_token: string;
   installation_token_available: boolean;
 };

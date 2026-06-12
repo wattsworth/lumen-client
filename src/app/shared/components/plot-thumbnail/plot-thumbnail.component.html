@@ -1,15 +1,19 @@
 <div class="card-body">
   <div class="title">
-    <span class="name">{{view.name}}</span><i *ngIf="view.owner==false" class="fa fa-globe"></i>
-    <br/>
-    <span class="description">{{view.description}}</span>
-  </div>
-  <div class="plot-image-container">
+    <span class="name">{{view.name}}</span>@if (view.owner==false) {
+    <i class="fa fa-globe"></i>
+  }
+  <br/>
+  <span class="description">{{view.description}}</span>
+</div>
+<div class="plot-image-container">
+  @if (view.live) {
     <div class="live-overlay"
-      *ngIf="view.live">
+      >
       <i class="fa fa-3x fa-heartbeat"></i>
       <br/> Live View
     </div>
-    <img class="plot-thumbnail" src="{{view.image}}" />
-  </div>
+  }
+  <img class="plot-thumbnail" src="{{view.image}}" />
+</div>
 </div>

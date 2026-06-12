@@ -1,118 +1,135 @@
-<div *ngIf="!(plotSelectors.nilmsLoaded$ | async)" class="nilms-loading">
-<fa-icon [icon]="['fas', 'spinner']" animation="spin" size="5x"></fa-icon>
-<p class="lead">loading...</p>
-</div>
+@if (!(plotSelectors.nilmsLoaded$ | async)) {
+  <div class="nilms-loading">
+    <fa-icon [icon]="['fas', 'spinner']" animation="spin" size="5x"></fa-icon>
+    <p class="lead">loading...</p>
+  </div>
+}
 <cdk-tree [dataSource]="dbNodes$" [treeControl]="treeControl" >
   <!-- == nilm element == -->
   <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: isNilm">
     <div class="nilm-node">
-    <!-- expand/collapse button-->
-    <span  cdkTreeNodeToggle (click)="toggleNode(node)" class="expandable-node">
-      <fa-icon [icon]="['fas', node.isExpanded ? 'caret-down' : 'caret-right']" [fixedWidth]="true" class="">
-      </fa-icon>
-      {{node.name}}
-    </span>
-    <!-- refresh node -->
-    <fa-icon [icon]="['fas', 'sync-alt']" class="icon-button refresh ml-1" *ngIf="!node.refreshing"
-    tooltip="refresh" placement="right" [delay]="500" 
-    (click)="nilmService.refreshNilm(node.nilmId)"></fa-icon>
-    <fa-icon [icon]="['fas', 'sync-alt']" animation="spin" *ngIf="node.refreshing"></fa-icon>
-    <!-- children -->
-    <div *ngIf="isLoading(node)" class="ml-3">
-      <fa-icon [icon]="['fas', 'spinner']" animation="spin"></fa-icon> loading...
-    </div>
-    <div [class.tree-invisible]="!node.isExpanded" class="ml-3">
-      <ng-container cdkTreeNodeOutlet></ng-container>
-    </div>
+      <!-- expand/collapse button-->
+      <span  cdkTreeNodeToggle (click)="toggleNode(node)" class="expandable-node">
+        <fa-icon [icon]="['fas', node.isExpanded ? 'caret-down' : 'caret-right']" [fixedWidth]="true" class="">
+        </fa-icon>
+        {{node.name}}
+      </span>
+      <!-- refresh node -->
+      @if (!node.refreshing) {
+        <fa-icon [icon]="['fas', 'sync-alt']" class="icon-button refresh ml-1"
+          tooltip="refresh" placement="right" [delay]="500"
+        (click)="nilmService.refreshNilm(node.nilmId)"></fa-icon>
+      }
+      @if (node.refreshing) {
+        <fa-icon [icon]="['fas', 'sync-alt']" animation="spin"></fa-icon>
+      }
+      <!-- children -->
+      @if (isLoading(node)) {
+        <div class="ml-3">
+          <fa-icon [icon]="['fas', 'spinner']" animation="spin"></fa-icon> loading...
+        </div>
+      }
+      <div [class.tree-invisible]="!node.isExpanded" class="ml-3">
+        <ng-container cdkTreeNodeOutlet></ng-container>
+      </div>
     </div>
   </cdk-nested-tree-node>
   <!-- == folder element == -->
   <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: isFolder">
     <div>
-    <!-- expand/collapse button-->
-    <span  cdkTreeNodeToggle (click)="toggleNode(node)" class="expandable-node">
-      <!--<fa-icon [icon]="['fas', node.isExpanded ? 'caret-down' : 'caret-right']" >
+      <!-- expand/collapse button-->
+      <span  cdkTreeNodeToggle (click)="toggleNode(node)" class="expandable-node">
+        <!--<fa-icon [icon]="['fas', node.isExpanded ? 'caret-down' : 'caret-right']" >
       </fa-icon>-->
       <fa-icon [icon]="['fas', node.isExpanded ? 'folder-open' : 'folder']" [fixedWidth]="true" class="ml-1 folder-icon" >
       </fa-icon>
       {{node.name}}
     </span>
     <!-- children -->
-    <div *ngIf="isLoading(node)" class="ml-3">
-      <fa-icon [icon]="['fas', 'spinner']" animation="spin"></fa-icon> loading...
-    </div>
+    @if (isLoading(node)) {
+      <div class="ml-3">
+        <fa-icon [icon]="['fas', 'spinner']" animation="spin"></fa-icon> loading...
+      </div>
+    }
     <div [class.tree-invisible]="!node.isExpanded" class="ml-3">
       <ng-container cdkTreeNodeOutlet></ng-container>
     </div>
-    </div>
-  </cdk-nested-tree-node>
-  <!-- == stream element == -->
-  <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: isStream" class="expandable-node">
-    <div>
+  </div>
+</cdk-nested-tree-node>
+<!-- == stream element == -->
+<cdk-nested-tree-node *cdkTreeNodeDef="let node; when: isStream" class="expandable-node">
+  <div>
     <!-- expand/collapse button-->
     <span  cdkTreeNodeToggle (click)="toggleNode(node)">
-      <fa-icon [icon]="['fas','circle']" *ngIf="node.active" class="active-data-stream"></fa-icon>
+      @if (node.active) {
+        <fa-icon [icon]="['fas','circle']" class="active-data-stream"></fa-icon>
+      }
       <fa-icon [icon]="['fas', 'database']" class="ml-1 data-stream-icon"></fa-icon>
       {{node.name}}
     </span>
     <div [class.tree-invisible]="!node.isExpanded" class="ml-3">
       <ng-container cdkTreeNodeOutlet></ng-container>
     </div>
-    </div>
-  </cdk-nested-tree-node>
-  <!-- == data element == -->
-  <cdk-tree-node *cdkTreeNodeDef="let node; when: isElement">
-    <div>
-     <!--plot element button-->
-     <span class="tree-button plot" 
-     *ngIf="node.plotted==false && node.plottable"
-     (click)="plotService.plotElement(node.element)">
-     <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> add </span>
-   <!--hide plotted element button -->
-   <span class="tree-button unplot" 
-     *ngIf="node.plotted==true"
-     (click)="plotService.hideElement(node.element)">
-     <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> hide </span>
-   <!-- element cannot be plotted -->
-   <a class="tree-button noplot"
-     *ngIf="node.plottable==false"
-     [tooltip]="node.tooltip" [delay]="500">
-     <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> add </a>
-    {{node.name}}
-    </div>
-  </cdk-tree-node>
-  <!-- == event stream app -->
-  <cdk-tree-node *cdkTreeNodeDef="let node; when: isEventStream">
-    <div>
-    <!--plot events button-->
-    <span class="tree-button plot"
-    *ngIf="node.plotted==false"
-    (click)="plotService.plotEvents(node.stream)">
-    <fa-icon [icon]="['fas', 'chart-bar']"></fa-icon> add </span>
-    <!--hide plotted events button -->
-    <span class="tree-button unplot" 
-      *ngIf="node.plotted==true"
-      (click)="plotService.hideEventsAndDuplicates(node.stream)">
-      <fa-icon [icon]="['fas', 'chart-bar']"></fa-icon> hide </span>
-    {{ node.name }}
-    </div>
-  </cdk-tree-node>
-  <!-- == data app == -->
-  <cdk-tree-node *cdkTreeNodeDef="let node; when: isDataApp">
-    <div>
-    <div class="data-app-node">
-      <span (click)="interfacesService.add_internal(+node.id.substring(1))" class="ml-1">
-        <fa-icon [icon]="['fas', 'cubes']"></fa-icon>
-          {{ node.name }}
-        </span>
-        <fa-icon [icon]="['fas', 'external-link-alt']" class="icon-button new-tab"
-          (click)="interfacesService.add_external(+node.id.substring(1))"></fa-icon>
-    </div>
-    </div>
-  </cdk-tree-node>
-  <!-- default -->
-  <cdk-tree-node *cdkTreeNodeDef="let node">
-    ERROR?: {{node.name}}: {{node.type}}
-  </cdk-tree-node>
+  </div>
+</cdk-nested-tree-node>
+<!-- == data element == -->
+<cdk-tree-node *cdkTreeNodeDef="let node; when: isElement">
+  <div>
+    <!--plot element button-->
+    @if (node.plotted==false && node.plottable) {
+      <span class="tree-button plot"
+        (click)="plotService.plotElement(node.element)">
+        <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> add </span>
+      }
+      <!--hide plotted element button -->
+      @if (node.plotted==true) {
+        <span class="tree-button unplot"
+          (click)="plotService.hideElement(node.element)">
+          <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> hide </span>
+        }
+        <!-- element cannot be plotted -->
+        @if (node.plottable==false) {
+          <a class="tree-button noplot"
+            [tooltip]="node.tooltip" [delay]="500">
+            <fa-icon [icon]="['fas', 'chart-line']"></fa-icon> add </a>
+          }
+          {{node.name}}
+        </div>
+      </cdk-tree-node>
+      <!-- == event stream app -->
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: isEventStream">
+        <div>
+          <!--plot events button-->
+          @if (node.plotted==false) {
+            <span class="tree-button plot"
+              (click)="plotService.plotEvents(node.stream)">
+              <fa-icon [icon]="['fas', 'chart-bar']"></fa-icon> add </span>
+            }
+            <!--hide plotted events button -->
+            @if (node.plotted==true) {
+              <span class="tree-button unplot"
+                (click)="plotService.hideEventsAndDuplicates(node.stream)">
+                <fa-icon [icon]="['fas', 'chart-bar']"></fa-icon> hide </span>
+              }
+              {{ node.name }}
+            </div>
+          </cdk-tree-node>
+          <!-- == data app == -->
+          <cdk-tree-node *cdkTreeNodeDef="let node; when: isDataApp">
+            <div>
+              <div class="data-app-node">
+                <span (click)="interfacesService.add_internal(+node.id.substring(1))" class="ml-1">
+                  <fa-icon [icon]="['fas', 'cubes']"></fa-icon>
+                  {{ node.name }}
+                </span>
+                <fa-icon [icon]="['fas', 'external-link-alt']" class="icon-button new-tab"
+                (click)="interfacesService.add_external(+node.id.substring(1))"></fa-icon>
+              </div>
+            </div>
+          </cdk-tree-node>
+          <!-- default -->
+          <cdk-tree-node *cdkTreeNodeDef="let node">
+            ERROR?: {{node.name}}: {{node.type}}
+          </cdk-tree-node>
 
-</cdk-tree>
+        </cdk-tree>

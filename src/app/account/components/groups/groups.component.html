@@ -1,13 +1,17 @@
 <!-- list of groups user owns -->
-<account-group  *ngFor="let grp of accountSelectors.ownedGroups$ | async" [group]="grp">
-</account-group>
+@for (grp of accountSelectors.ownedGroups$ | async; track grp) {
+  <account-group  [group]="grp">
+  </account-group>
+}
 <!-- ...or a message if the user doesn't own any groups -->
-<div class="alert alert-info" *ngIf="(accountSelectors.ownedGroups$ | async).length==0">
+@if ((accountSelectors.ownedGroups$ | async).length==0) {
+  <div class="alert alert-info">
   You do not manage any groups</div>
+}
 
 <!-- create a new group -->
 <div class="clearfix pr-4">
-  <button class="btn btn-primary float-right" 
+  <button class="btn btn-primary float-right"
     (click)="newGroupModal.show()">
     <fa-icon [icon]="['fas', 'plus']"></fa-icon>
     New Group
@@ -18,33 +22,37 @@
 <hr/>
 <span class="lead">Member Of:</span>
 <ul class="list">
-  <li *ngFor="let grp of accountSelectors.memberGroups$ | async">
-    {{grp.name}}
-  </li>
+  @for (grp of accountSelectors.memberGroups$ | async; track grp) {
+    <li>
+      {{grp.name}}
+    </li>
+  }
 </ul>
 <!-- ...or a message if the user isnt' a member of any groups -->
-<div class="alert alert-info" *ngIf="(accountSelectors.memberGroups$ | async).length==0">
-    You do not belong to any groups</div>
+@if ((accountSelectors.memberGroups$ | async).length==0) {
+  <div class="alert alert-info">
+  You do not belong to any groups</div>
+}
 
 
 <!-- ====== create group modal ====== -->
 
-<div class="modal fade" bsModal #newGroupModal="bs-modal" 
-    [config]="{backdrop: 'static'}"
-    tabindex="-1" role="dialog"
-    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #newGroupModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <!-- modal title bar -->
         <h4 class="modal-title float-left">Create a New Group</h4>
-        <button type="button" class="close float-right" 
+        <button type="button" class="close float-right"
           aria-label="Close" (click)="newGroupModal.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <account-group-form (cancel)="newGroupModal.hide()" 
+        <account-group-form (cancel)="newGroupModal.hide()"
           (save)="createGroup($event)">
 
         </account-group-form>

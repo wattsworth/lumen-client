@@ -1,180 +1,204 @@
 
-  
+
 <p class="page-title-bar">
-     Data Explorer
+  Data Explorer
   <!-- help button -->
   <a href="{{helpUrl}}/explorer.html" target="_blank"
-   class="btn btn-success help-btn"><fa-icon [icon]="['fas', 'life-ring']"></fa-icon> Help </a>
-</p>
+    class="btn btn-success help-btn"><fa-icon [icon]="['fas', 'life-ring']"></fa-icon> Help </a>
+  </p>
 
-<div class="row">
-  <div class="col-md-3 col-sm-4">
-    <tabset>
-      <!-- File Tree Tab -->
-      <tab heading='Nodes'>
-        <div id="file-tree">
-          <app-file-tree></app-file-tree>
-        </div>
-      </tab>
-      <!-- Plot Tab -->
-      <tab heading='Plot'  [disabled]="plotSelectors.isPlotEmpty$ | async">
-        <app-plot-tab> </app-plot-tab>
-      </tab>
-      <!-- Tool Tab -->
-      <tab heading='Tools' [disabled]="plotSelectors.isPlotEmpty$ | async">
-        <app-tool-tab 
-          (savePlotImage)="showSavePlotImage()"
-          (saveDataView)="showSaveDataView()"
+  <div class="row">
+    <div class="col-md-3 col-sm-4">
+      <tabset>
+        <!-- File Tree Tab -->
+        <tab heading='Nodes'>
+          <div id="file-tree">
+            <app-file-tree></app-file-tree>
+          </div>
+        </tab>
+        <!-- Plot Tab -->
+        <tab heading='Plot'  [disabled]="plotSelectors.isPlotEmpty$ | async">
+          <app-plot-tab> </app-plot-tab>
+        </tab>
+        <!-- Tool Tab -->
+        <tab heading='Tools' [disabled]="plotSelectors.isPlotEmpty$ | async">
+          <app-tool-tab
+            (savePlotImage)="showSavePlotImage()"
+            (saveDataView)="showSaveDataView()"
           (loadDataView)="showLoadDataView()"></app-tool-tab>
-      </tab>
-    </tabset>
-  </div>
-  <!-- ========Content display panel========= -->
-  <div class="col-md-9 col-sm-8">
-    <!-- Tab Headers (only visible if at least one interface is displayed-->
-    <tabset #interfaceTabs [hidden]="interfacesSelectors.noneDisplayed$ | async">
-      <tab heading="Data Explorer" class='interface-tab'
-      (selectTab)="interfacesService.select(null)"></tab>
-      <tab class='interface-tab'
-        *ngFor="let interface of interfacesSelectors.displayed$ | async"
-        (selectTab)="interfacesService.select(interface.id)">
-        <ng-template tabHeading>
-          <span class="tab-title">
-            {{interface.name}}
-            <fa-icon [icon]="['fas', 'times']" class="fa-close" 
-              (click)="interfacesService.remove(interface.id)"></fa-icon>
-          </span>
-        </ng-template>
-      </tab>
-    </tabset>
-    <!-- Interface tabs -->
-    <div class="interfaces-parent">
-      <div class="interfaces" *ngFor="let interface of interfacesSelectors.displayed$ | async"
-        [hidden]="interface.id!=(interfacesSelectors.selectedId$ | async)">
-        <iframe [src]="interface.url | safe"></iframe>
-      </div>
+        </tab>
+      </tabset>
     </div>
-    <!-- Data Explorer "tab" -->
-    <div class="parent"         
-      [hidden]="(interfacesSelectors.selectedId$ | async) != null">
-      <div class="plot-container" 
-        [ngClass]="{'shrink': !(interfacesSelectors.noneDisplayed$ | async)}"
-        [ngStyle]="{ 'z-index': plotZValue$ | async }">
-        <!-- ==== NAV PLOT ==== -->
-        <!-- nav loading spinner -->
-        <span class="data-loading" [@fadeInOut]
-          *ngIf="plotSelectors.addingNavData$ | async">
-          <fa-icon [icon]="['fas', 'spinner']" animation="spin" [fixedWidth]="true"></fa-icon>
-          loading data
-        </span>
-        <span class="nav-date-range">
-          {{plotSelectors.navTimeRange$ | async | duration}}
-        </span>
-        <!-- navigation plot (25% of view) -->
-        <app-nav-plot class="nav-plot"></app-nav-plot>
-        <!-- ===== MAIN PLOT ==== -->
-        <!-- plot loading spinner -->
-        <span class="data-loading" [@fadeInOut]
-          *ngIf="plotSelectors.addingPlotData$ | async">
-          <fa-icon [icon]="['fas', 'spinner']" animation="spin" [fixedWidth]="true"></fa-icon>
-          loading data
-        </span>
-        <!-- warning if some plot data has errors -->
-        <span class="data-errors" [@fadeInOut]
-          *ngIf="!(plotSelectors.isPlotDataValid$ | async)&&!(plotSelectors.addingPlotData$ | async)">
-          <fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon>
-          some data could not be retrieved
-        </span>
-        <!-- warning if there are too many events (and the plot is valid)-->        
-        <span class="event-overflow" [@fadeInOut] [tooltip]="overflowTemplate" placement="bottom"
-          *ngIf="((plotSelectors.eventOverflows$ | async)?.length>0) &&
-             !(plotSelectors.addingPlotData$ | async) && (plotSelectors.isPlotDataValid$ | async)">
-          <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
-          too many events, displaying 
-          histogram<span *ngIf="(plotSelectors.eventOverflows$ | async)?.length>1">s</span>
-          instead          
-        </span>
+    <!-- ========Content display panel========= -->
+    <div class="col-md-9 col-sm-8">
+      <!-- Tab Headers (only visible if at least one interface is displayed-->
+      <tabset #interfaceTabs [hidden]="interfacesSelectors.noneDisplayed$ | async">
+        <tab heading="Data Explorer" class='interface-tab'
+        (selectTab)="interfacesService.select(null)"></tab>
+        @for (interface of interfacesSelectors.displayed$ | async; track interface) {
+          <tab class='interface-tab'
+            (selectTab)="interfacesService.select(interface.id)">
+            <ng-template tabHeading>
+              <span class="tab-title">
+                {{interface.name}}
+                <fa-icon [icon]="['fas', 'times']" class="fa-close"
+                (click)="interfacesService.remove(interface.id)"></fa-icon>
+              </span>
+            </ng-template>
+          </tab>
+        }
+      </tabset>
+      <!-- Interface tabs -->
+      <div class="interfaces-parent">
+        @for (interface of interfacesSelectors.displayed$ | async; track interface) {
+          <div class="interfaces"
+            [hidden]="interface.id!=(interfacesSelectors.selectedId$ | async)">
+            <iframe [src]="interface.url | safe"></iframe>
+          </div>
+        }
+      </div>
+      <!-- Data Explorer "tab" -->
+      <div class="parent"
+        [hidden]="(interfacesSelectors.selectedId$ | async) != null">
+        <div class="plot-container"
+          [ngClass]="{'shrink': !(interfacesSelectors.noneDisplayed$ | async)}"
+          [ngStyle]="{ 'z-index': plotZValue$ | async }">
+          <!-- ==== NAV PLOT ==== -->
+          <!-- nav loading spinner -->
+          @if (plotSelectors.addingNavData$ | async) {
+            <span class="data-loading" [@fadeInOut]
+              >
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin" [fixedWidth]="true"></fa-icon>
+              loading data
+            </span>
+          }
+          <span class="nav-date-range">
+            {{plotSelectors.navTimeRange$ | async | duration}}
+          </span>
+          <!-- navigation plot (25% of view) -->
+          <app-nav-plot class="nav-plot"></app-nav-plot>
+          <!-- ===== MAIN PLOT ==== -->
+          <!-- plot loading spinner -->
+          @if (plotSelectors.addingPlotData$ | async) {
+            <span class="data-loading" [@fadeInOut]
+              >
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin" [fixedWidth]="true"></fa-icon>
+              loading data
+            </span>
+          }
+          <!-- warning if some plot data has errors -->
+          @if (!(plotSelectors.isPlotDataValid$ | async)&&!(plotSelectors.addingPlotData$ | async)) {
+            <span class="data-errors" [@fadeInOut]
+              >
+              <fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon>
+              some data could not be retrieved
+            </span>
+          }
+          <!-- warning if there are too many events (and the plot is valid)-->
+          @if (((plotSelectors.eventOverflows$ | async)?.length>0) &&
+            !(plotSelectors.addingPlotData$ | async) && (plotSelectors.isPlotDataValid$ | async)) {
+            <span class="event-overflow" [@fadeInOut] [tooltip]="overflowTemplate" placement="bottom"
+              >
+              <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+              too many events, displaying
+              histogram@if ((plotSelectors.eventOverflows$ | async)?.length>1) {
+              <span>s</span>
+            }
+            instead
+          </span>
+        }
         <ng-template #overflowTemplate>
-            <span class="event-overflow-item" *ngFor="let overflow of plotSelectors.eventOverflows$ | async">
+          @for (overflow of plotSelectors.eventOverflows$ | async; track overflow) {
+            <span class="event-overflow-item">
               {{overflow.name}} has {{overflow.count}} events
             </span>
+          }
         </ng-template>
 
 
         <!-- warning if interval data is displayed -->
-        <span class="interval-warning" [@fadeInOut]
-          *ngIf="plotSelectors.isIntervalDataDisplayed$ | async">
-          <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
-          some data cannot be displayed at this resolution
-        </span>
+        @if (plotSelectors.isIntervalDataDisplayed$ | async) {
+          <span class="interval-warning" [@fadeInOut]
+            >
+            <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+            some data cannot be displayed at this resolution
+          </span>
+        }
         <!-- annotation title and content -->
-        <span class="annotation-details"
-          *ngIf="(annotationSelectors.selectedAnnotation$ | async) != null">
-          <span class="title">{{(annotationSelectors.selectedAnnotation$ | async).title}}</span>
-          <span class="content">{{(annotationSelectors.selectedAnnotation$ | async).content}}</span>
-
-        </span>
+        @if ((annotationSelectors.selectedAnnotation$ | async) != null) {
+          <span class="annotation-details"
+            >
+            <span class="title">{{(annotationSelectors.selectedAnnotation$ | async).title}}</span>
+            <span class="content">{{(annotationSelectors.selectedAnnotation$ | async).content}}</span>
+          </span>
+        }
         <!-- main plot (70% of view) -->
         <app-main-plot class="main-plot" #plot></app-main-plot>
 
         <!-- date bar (5% of view) -->
-        <button class="date-bar" (click)="plotService.showDateSelector()" 
+        <button class="date-bar" (click)="plotService.showDateSelector()"
           [disabled]="plotSelectors.liveUpdate$ | async">
           {{plotSelectors.plotTimeRange$ | async | duration}}
         </button>
         <!-- clear zero button -->
-        <div class="clear-zero float-left" [@fadeInOut]
-          (click)="measurementService.clearZero()"
-          *ngIf="measurementSelectors.zeroSet$ | async">
-          Clear Zero
-          <fa-icon [icon]="['fas', 'times']" class="fa-close"></fa-icon>
-        </div>
+        @if (measurementSelectors.zeroSet$ | async) {
+          <div class="clear-zero float-left" [@fadeInOut]
+            (click)="measurementService.clearZero()"
+            >
+            Clear Zero
+            <fa-icon [icon]="['fas', 'times']" class="fa-close"></fa-icon>
+          </div>
+        }
         <!-- Jump to current time -->
-        <div class="btn btn-outline-secondary plot-button float-right" [@fadeInOut]
-        (click) = "plotService.setTimeRangeToNow()"
-          *ngIf="!(plotSelectors.liveUpdate$ | async)">
-          <fa-icon [icon]="['fas', 'clock']"></fa-icon> Now
-        </div>
+        @if (!(plotSelectors.liveUpdate$ | async)) {
+          <div class="btn btn-outline-secondary plot-button float-right" [@fadeInOut]
+            (click) = "plotService.setTimeRangeToNow()"
+            >
+            <fa-icon [icon]="['fas', 'clock']"></fa-icon> Now
+          </div>
+        }
         <!-- live update notification -->
-        <div class="live-update plot-button float-right" [@fadeInOut]
-          *ngIf="plotSelectors.liveUpdate$ | async">
-          <fa-icon [icon]="['fas', 'heartbeat']"></fa-icon> {{ plotSelectors.liveUpdateInterval$ | async | interval}} Update
-          <fa-icon [icon]="['fas', 'times']" class="fa-close" (click)="plotService.disableLiveUpdate()"></fa-icon>
-        </div>
+        @if (plotSelectors.liveUpdate$ | async) {
+          <div class="live-update plot-button float-right" [@fadeInOut]
+            >
+            <fa-icon [icon]="['fas', 'heartbeat']"></fa-icon> {{ plotSelectors.liveUpdateInterval$ | async | interval}} Update
+            <fa-icon [icon]="['fas', 'times']" class="fa-close" (click)="plotService.disableLiveUpdate()"></fa-icon>
+          </div>
+        }
       </div>
       <!--modal overlay to pick date -->
-      <app-date-picker class="plot overlay" 
-        *ngIf="plotSelectors.showDateSelector$ | async"
+      @if (plotSelectors.showDateSelector$ | async) {
+        <app-date-picker class="plot overlay"
         [timeRange]="plotSelectors.plotTimeRange$ | async"></app-date-picker>
+      }
 
       <!-- modal overlay if no plot -->
-      <div class="plot overlay" [@fadeOut]
-        *ngIf="!(plotSelectors.showPlot$ |async)"
-        [ngClass]="{'shrink': !(interfacesSelectors.noneDisplayed$ | async)}" >
-        <div class="message">
-          <span *ngIf="plotSelectors.addingPlotData$ | async; then loading else default"></span>
+      @if (!(plotSelectors.showPlot$ |async)) {
+        <div class="plot overlay" [@fadeOut]
+          [ngClass]="{'shrink': !(interfacesSelectors.noneDisplayed$ | async)}" >
+          <div class="message">
+            @if (plotSelectors.addingPlotData$ | async) {
+              <fa-icon [icon]="['fas', 'spinner']" animation="spin" size="5x"></fa-icon>
+              <p>Loading Data...</p>
+            } @else {
+              <fa-icon [icon]="['fas', 'chart-line']" size="5x"></fa-icon>
+              <br/>
+              <button class="btn btn-secondary btn-lg"
+                (click)="showLoadDataView()">
+              Open Saved View </button>
+            }
+          </div>
         </div>
-        <ng-template #loading>
-          <fa-icon [icon]="['fas', 'spinner']" animation="spin" size="5x"></fa-icon>
-          <p>Loading Data...</p>
-        </ng-template>
-        <ng-template #default>
-          <fa-icon [icon]="['fas', 'chart-line']" size="5x"></fa-icon>
-          <br/>
-          <button class="btn btn-secondary btn-lg"
-            (click)="showLoadDataView()">
-            Open Saved View </button>
-        </ng-template>
-      </div>
+      }
     </div>
   </div>
 </div>
 
 
 <!-- ====== save plot image modal ====== -->
-<div class="modal fade" bsModal #imageModal="bs-modal" 
-  [config]="{backdrop: 'static'}" 
-  tabindex="-1" role="dialog" 
+<div class="modal fade" bsModal #imageModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
   aria-labelledby="downloadImageModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -190,7 +214,7 @@
           <div class="live-overlay"></div>
           <img class="plot-image" src="{{this.imageData}}" />
         </div>
-        <span class="text-muted"> 
+        <span class="text-muted">
           Note: zoom out on the browser to increase image resolution
         </span>
       </div>
@@ -200,11 +224,11 @@
 
 
 <!-- ====== save data view modal ====== -->
-<div class="modal fade" bsModal #saveDataViewModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     (onShown)="dataViewForm.reset()"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #saveDataViewModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  (onShown)="dataViewForm.reset()"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -215,7 +239,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <app-data-view-form #dataViewForm
+        <app-data-view-form #dataViewForm
             [view]="{
           image: imageData,
           name: '',
@@ -226,19 +250,19 @@
           redux: null,
           owner: null,
           live: this.plotSelectors.liveUpdate$ | async}" 
-            (save)="createDataView($event)" 
-            (cancel)="saveDataViewModal.hide()"></app-data-view-form>
-          
+          (save)="createDataView($event)"
+        (cancel)="saveDataViewModal.hide()"></app-data-view-form>
+
       </div>
     </div>
   </div>
 </div>
 
 <!-- ====== load data view modal ====== -->
-<div class="modal fade" bsModal #loadDataViewModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #loadDataViewModal="bs-modal"
+  [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -249,8 +273,8 @@
         </button>
       </div>
       <div class="modal-body">
-          <app-load-data-view (loaded)="loadDataViewModal.hide()"></app-load-data-view>
-          <ng-template #empty>No data views</ng-template>
+        <app-load-data-view (loaded)="loadDataViewModal.hide()"></app-load-data-view>
+        <ng-template #empty>No data views</ng-template>
       </div>
     </div>
   </div>
@@ -258,47 +282,47 @@
 
 
 <!-- ====== measurement results modal ====== -->
-<div class="modal fade" bsModal #measurementModal="bs-modal" 
-     [config]="{backdrop: false}"
-     (onHide)="measurementService.clearRange()"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #measurementModal="bs-modal"
+  [config]="{backdrop: false}"
+  (onHide)="measurementService.clearRange()"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <!-- modal title bar -->
         <h4 class="modal-title float-left">
-          Range: {{measurementSelectors.measurementRange$ | async | duration}}</h4>
+        Range: {{measurementSelectors.measurementRange$ | async | duration}}</h4>
         <button type="button" class="close float-right" aria-label="Close" (click)="measurementModal.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-          <app-measurement-results></app-measurement-results>
+        <app-measurement-results></app-measurement-results>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ====== new annotation modal ====== -->
-<div class="modal fade" bsModal #annotationModal="bs-modal" 
-     [config]="{backdrop: false}"
-     (onHide)="annotationUIService.clearRange()"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" bsModal #annotationModal="bs-modal"
+  [config]="{backdrop: false}"
+  (onHide)="annotationUIService.clearRange()"
+  tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <!-- modal title bar -->
         <h4 class="modal-title float-left">
-          Annotate {{annotationSelectors.annotationType$ | async}}</h4>
+        Annotate {{annotationSelectors.annotationType$ | async}}</h4>
         <button type="button" class="close float-right" aria-label="Close" (click)="annotationModal.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-          <app-new-annotation (cancel)="annotationModal.hide()" (save)="createAnnotation($event)"
-          [range] = "annotationSelectors.selectionRange$ | async"></app-new-annotation>
+        <app-new-annotation (cancel)="annotationModal.hide()" (save)="createAnnotation($event)"
+        [range] = "annotationSelectors.selectionRange$ | async"></app-new-annotation>
       </div>
     </div>
   </div>

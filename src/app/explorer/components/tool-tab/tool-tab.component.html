@@ -5,152 +5,158 @@
     (click)="plotService.setNavRangeToPlotRange()">
     Sync Plot Time Scales <fa-icon [icon]="['fas', 'exchange-alt']" [rotate]="90"></fa-icon></button>
 
-  <!-- Annotation Buttons -->
+    <!-- Annotation Buttons -->
 
-  <!-- start a new annotation-->
-  <button class="btn btn-secondary btn-block"
-    *ngIf="!(annotationSelectors.enabled$ | async)"
-    [disabled]="toolModeSelected$ | async"
-    (click)="annotationUIService.startAnnotation()">
-    Annotation Mode
-  </button>
-    
-  <!-- exit Annotation mode -->
-  <button class="btn btn-danger btn-block"
-  *ngIf="(annotationSelectors.enabled$ | async)"
-  (click)="annotationUIService.cancelAnnotation()">
-  Exit Annotation Mode </button>
+    <!-- start a new annotation-->
+    @if (!(annotationSelectors.enabled$ | async)) {
+      <button class="btn btn-secondary btn-block"
+        [disabled]="toolModeSelected$ | async"
+        (click)="annotationUIService.startAnnotation()">
+        Annotation Mode
+      </button>
+    }
+
+    <!-- exit Annotation mode -->
+    @if ((annotationSelectors.enabled$ | async)) {
+      <button class="btn btn-danger btn-block"
+        (click)="annotationUIService.cancelAnnotation()">
+      Exit Annotation Mode </button>
+    }
 
 
-  <!-- Measurement Buttons -->
-  <!--   start a new measurement -->
-  <button class="btn btn-secondary btn-block"
-    *ngIf="!(measurementSelectors.enabled$ | async)"
-    [disabled]="toolModeSelected$ | async"
-    (click)="measurementService.startMeasurement()">
-    Measurement Mode </button>
-  <!-- cancel the current measurement -->
-  <button class="btn btn-danger btn-block"
-    *ngIf="(measurementSelectors.enabled$ | async)"
-    (click)="measurementService.cancelMeasurement()">
-    Exit Measurement Mode </button>
-  
+    <!-- Measurement Buttons -->
+    <!--   start a new measurement -->
+    @if (!(measurementSelectors.enabled$ | async)) {
+      <button class="btn btn-secondary btn-block"
+        [disabled]="toolModeSelected$ | async"
+        (click)="measurementService.startMeasurement()">
+      Measurement Mode </button>
+    }
+    <!-- cancel the current measurement -->
+    @if ((measurementSelectors.enabled$ | async)) {
+      <button class="btn btn-danger btn-block"
+        (click)="measurementService.cancelMeasurement()">
+      Exit Measurement Mode </button>
+    }
 
-  <!-- Event Selection Buttons -->
-  <!--   start event selection -->
-  <button class="btn btn-secondary btn-block"
-  *ngIf="!(eventSelectorSelectors.enabled$ | async)"
-  [disabled]="toolModeSelected$ | async"
-  (click)="eventSelectorService.startEventSelector()">
-  Event Selection Mode </button>
-<!-- exit event selection -->
-<button class="btn btn-danger btn-block"
-  *ngIf="(eventSelectorSelectors.enabled$ | async)"
-  (click)="eventSelectorService.exitEventSelector()">
-  Exit Selection Mode </button>
 
-  <hr/>
+    <!-- Event Selection Buttons -->
+    <!--   start event selection -->
+    @if (!(eventSelectorSelectors.enabled$ | async)) {
+      <button class="btn btn-secondary btn-block"
+        [disabled]="toolModeSelected$ | async"
+        (click)="eventSelectorService.startEventSelector()">
+      Event Selection Mode </button>
+    }
+    <!-- exit event selection -->
+    @if ((eventSelectorSelectors.enabled$ | async)) {
+      <button class="btn btn-danger btn-block"
+        (click)="eventSelectorService.exitEventSelector()">
+      Exit Selection Mode </button>
+    }
 
-  
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" [checked]="plotSelectors.liveUpdate$ | async"
-        (change)="plotService.toggleLiveUpdate()">
+    <hr/>
+
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" [checked]="plotSelectors.liveUpdate$ | async"
+          (change)="plotService.toggleLiveUpdate()">
         <fa-icon [icon]="['fas', 'heartbeat']"  [fixedWidth]="true"></fa-icon> Live Update
-    </label>
-    <button class="btn btn-secondary btn-sm ml-2"
-      (click)="liveUpdateModal.show()">
-      <fa-icon [icon]="['fas', 'clock']"  [fixedWidth]="true"></fa-icon></button>
-  </div>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" [checked]="plotSelectors.navZoomLock$ | async" 
-        (change)="plotService.toggleNavZoomLock()">
-        <fa-icon [icon]="['fas', 'lock']"  [fixedWidth]="true"></fa-icon> Lock Selection Width
-    </label>
-  </div>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" [checked]="plotSelectors.showDataEnvelope$ | async" 
-        (change)="plotService.toggleShowDataEnvelope()">
-        <fa-icon [icon]="['fas', 'chart-area']"  [fixedWidth]="true"></fa-icon> Data Envelope
-    </label>
-  </div>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" [checked]="plotSelectors.dataCursor$ | async" 
-        (change)="plotService.toggleDataCursor()">
-        <fa-icon [icon]="['fas', 'crosshairs']"  [fixedWidth]="true"></fa-icon> Data Cursor
-    </label>
-  </div>
-  <hr/>
-
-  
-  <button class="btn btn-secondary btn-block"
-  (click)="loadDataView.emit('load')">Open Plot</button>
-
-<button class="btn btn-secondary btn-block"
-  (click)="saveDataView.emit('save')">Save Plot</button>
-
-  
-  <button class="btn btn-secondary btn-block"
-    (click)="downloadDataModal.show()">
-    <fa-icon [icon]="['fas', 'download']"></fa-icon> Download Data
-  </button>
-  <button class="btn btn-secondary btn-block"
-    (click)="savePlotImage.emit('save')">
-    <fa-icon [icon]="['fas', 'image']"></fa-icon> Download Image</button>
-</div>
-
-<!-- ====== set live update interval modal ===== -->
-<div class="modal fade" bsModal #liveUpdateModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <!-- modal title bar -->
-        <h4 class="modal-title float-left">Live Update Interval</h4>
-        <button type="button" class="close float-right" aria-label="Close" (click)="liveUpdateModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      </label>
+      <button class="btn btn-secondary btn-sm ml-2"
+        (click)="liveUpdateModal.show()">
+        <fa-icon [icon]="['fas', 'clock']"  [fixedWidth]="true"></fa-icon></button>
       </div>
-      <div class="modal-body">      
-        <form>   
-        <div class="input-group">
-          <input type="number" #interval class="form-control" aria-label="update rate" [value]="plotSelectors.liveUpdateInterval$ | async">
-          <div class="input-group-append">
-            <span class="input-group-text">seconds</span>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [checked]="plotSelectors.navZoomLock$ | async"
+            (change)="plotService.toggleNavZoomLock()">
+          <fa-icon [icon]="['fas', 'lock']"  [fixedWidth]="true"></fa-icon> Lock Selection Width
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [checked]="plotSelectors.showDataEnvelope$ | async"
+            (change)="plotService.toggleShowDataEnvelope()">
+          <fa-icon [icon]="['fas', 'chart-area']"  [fixedWidth]="true"></fa-icon> Data Envelope
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [checked]="plotSelectors.dataCursor$ | async"
+            (change)="plotService.toggleDataCursor()">
+          <fa-icon [icon]="['fas', 'crosshairs']"  [fixedWidth]="true"></fa-icon> Data Cursor
+        </label>
+      </div>
+      <hr/>
+
+
+      <button class="btn btn-secondary btn-block"
+      (click)="loadDataView.emit('load')">Open Plot</button>
+
+      <button class="btn btn-secondary btn-block"
+      (click)="saveDataView.emit('save')">Save Plot</button>
+
+
+      <button class="btn btn-secondary btn-block"
+        (click)="downloadDataModal.show()">
+        <fa-icon [icon]="['fas', 'download']"></fa-icon> Download Data
+      </button>
+      <button class="btn btn-secondary btn-block"
+        (click)="savePlotImage.emit('save')">
+        <fa-icon [icon]="['fas', 'image']"></fa-icon> Download Image</button>
+      </div>
+
+      <!-- ====== set live update interval modal ===== -->
+      <div class="modal fade" bsModal #liveUpdateModal="bs-modal"
+        [config]="{backdrop: 'static'}"
+        tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!-- modal title bar -->
+              <h4 class="modal-title float-left">Live Update Interval</h4>
+              <button type="button" class="close float-right" aria-label="Close" (click)="liveUpdateModal.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="input-group">
+                  <input type="number" #interval class="form-control" aria-label="update rate" [value]="plotSelectors.liveUpdateInterval$ | async">
+                  <div class="input-group-append">
+                    <span class="input-group-text">seconds</span>
+                  </div>
+                </div>
+                <div class='mt-3'>
+                  <button class="btn btn-primary btn-block" (click)="setLiveUpdateInterval(+interval.value)">Save</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-        <div class='mt-3'>
-          <button class="btn btn-primary btn-block" (click)="setLiveUpdateInterval(+interval.value)">Save</button>
-        </div>
-      </form>    
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- ====== download data modal ====== -->
-<div class="modal fade" bsModal #downloadDataModal="bs-modal" 
-     [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <!-- modal title bar -->
-        <h4 class="modal-title float-left">Data from {{plotSelectors.plotTimeRange$ | async | duration}}</h4>
-        <button type="button" class="close float-right" aria-label="Close" (click)="downloadDataModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <!-- ====== download data modal ====== -->
+      <div class="modal fade" bsModal #downloadDataModal="bs-modal"
+        [config]="{backdrop: 'static'}"
+        tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!-- modal title bar -->
+              <h4 class="modal-title float-left">Data from {{plotSelectors.plotTimeRange$ | async | duration}}</h4>
+              <button type="button" class="close float-right" aria-label="Close" (click)="downloadDataModal.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <app-download-data [range]="plotSelectors.plotTimeRange$ | async"></app-download-data>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-          <app-download-data [range]="plotSelectors.plotTimeRange$ | async"></app-download-data>
-      </div>
-    </div>
-  </div>
-</div>
 

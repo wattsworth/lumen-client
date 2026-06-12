@@ -2,11 +2,15 @@
   <div class="panel-title">Stream Properties</div>
   <dl class="row">
     <dt class="col-2 text-right">Time Range</dt>
-     <dd class="col-10" *ngIf="stream.size_on_disk>0">
+    @if (stream.size_on_disk>0) {
+      <dd class="col-10">
         {{stream.start_time/1e3 | date:"y MMM dd HH:mm:ss"}} &mdash;
         {{stream.end_time/1e3   | date:"y MMM dd HH:mm:ss"}}
-    </dd>
-    <dd class="col-10"*ngIf="stream.size_on_disk==0"> &mdash;</dd>
+      </dd>
+    }
+    @if (stream.size_on_disk==0) {
+      <dd class="col-10"> &mdash;</dd>
+    }
     <dt class="col-2 text-right">Size on Disk</dt>
     <dd class="col-10">{{stream.size_on_disk | byteSize}}</dd>
     <dt class="col-2 text-right">Total Rows</dt>
@@ -17,23 +21,23 @@
     <dd class="col-10">{{stream.path}}</dd>
   </dl>
 
-  <form class="row clearfix" [formGroup]="form" 
+  <form class="row clearfix" [formGroup]="form"
     (ngSubmit)="onSubmit(form.value)">
     <div class="form-group col-md-3">
       <label class="control-label" for="folder-name">Name</label>
       <input class="form-control"
-          id="folder-name"
-          placeholder="Name"
-          type="text"
-          [formControl]="form.controls['name'] | formControl">
+        id="folder-name"
+        placeholder="Name"
+        type="text"
+        [formControl]="form.controls['name'] | formControl">
     </div>
     <div class="form-group col-md-9">
       <label for="folder-description">Description</label>
       <input class="form-control"
-          id="folder-description"
-          placeholder="Name"
-          type="text"
-          [formControl]="form.controls['description'] | formControl">
+        id="folder-description"
+        placeholder="Name"
+        type="text"
+        [formControl]="form.controls['description'] | formControl">
     </div>
 
     <div class="panel-title">
@@ -53,58 +57,62 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let subform of formElementsArray.controls">
-          <td>
-            <input type="checkbox"
-                [formControl]="subform.get('plottable') | formControl"></td>
-          <td>
-            <ng-select [formControl]="subform.get('display_type') | formControl"
-              [items]="displayTypeOptions" [clearable]="false"></ng-select></td>
-          <td class="form-group" [class.has-error]="!subform.get('name').valid"> 
-            <input type="text" class="form-control"
-                
-                [formControl]="subform.get('name') | formControl"></td>
-          <td>
-            <input type="text"
-                class="form-control"
-                [formControl]="subform.get('units') | formControl">
-          </td>
-          <td class="form-group" [class.has-error]="!subform.get('offset').valid">
-            <input type="text"
-                class="form-control"
-                [formControl]="subform.get('offset') | formControl">
-          </td>
-          <td class="form-group" [class.has-error]="!subform.get('scale_factor').valid">
-            <input type="text"
-                class="form-control"
-                [formControl]="subform.get('scale_factor') | formControl">
-          </td>
-          <td class="form-group" [class.has-error]="!subform.get('default_min').valid">
-            <input type="text"
-                class="form-control"
-                placeholder="auto"
-                [formControl]="subform.get('default_min') | formControl">
-          </td>
-          <td class="form-group" [class.has-error]="!subform.get('default_max').valid">
-            <input type="text"
-                class="form-control"
-                placeholder="auto"
-                [formControl]="subform.get('default_max') | formControl">
-          </td>
-        </tr>
+        @for (subform of formElementsArray.controls; track subform) {
+          <tr>
+            <td>
+              <input type="checkbox"
+              [formControl]="subform.get('plottable') | formControl"></td>
+              <td>
+                <ng-select [formControl]="subform.get('display_type') | formControl"
+                [items]="displayTypeOptions" [clearable]="false"></ng-select></td>
+                <td class="form-group" [class.has-error]="!subform.get('name').valid">
+                  <input type="text" class="form-control"
+                  [formControl]="subform.get('name') | formControl"></td>
+                  <td>
+                    <input type="text"
+                      class="form-control"
+                      [formControl]="subform.get('units') | formControl">
+                  </td>
+                  <td class="form-group" [class.has-error]="!subform.get('offset').valid">
+                    <input type="text"
+                      class="form-control"
+                      [formControl]="subform.get('offset') | formControl">
+                  </td>
+                  <td class="form-group" [class.has-error]="!subform.get('scale_factor').valid">
+                    <input type="text"
+                      class="form-control"
+                      [formControl]="subform.get('scale_factor') | formControl">
+                  </td>
+                  <td class="form-group" [class.has-error]="!subform.get('default_min').valid">
+                    <input type="text"
+                      class="form-control"
+                      placeholder="auto"
+                      [formControl]="subform.get('default_min') | formControl">
+                  </td>
+                  <td class="form-group" [class.has-error]="!subform.get('default_max').valid">
+                    <input type="text"
+                      class="form-control"
+                      placeholder="auto"
+                      [formControl]="subform.get('default_max') | formControl">
+                  </td>
+                </tr>
+              }
 
-      </tbody>
-    </table>
-    <div class="form-group">
-      <div class="float-left">
-        <button class="btn btn-primary"
-          *ngIf="stream.locked" disabled>
-          Locked
-        </button>
-        <button type="submit" class="btn btn-primary"
-          *ngIf="!stream.locked"
-          [disabled]="!form.valid">Save</button>
+            </tbody>
+          </table>
+          <div class="form-group">
+            <div class="float-left">
+              @if (stream.locked) {
+                <button class="btn btn-primary"
+                  disabled>
+                  Locked
+                </button>
+              }
+              @if (!stream.locked) {
+                <button type="submit" class="btn btn-primary"
+                [disabled]="!form.valid">Save</button>
+              }
+            </div>
+          </div>
+        </form>
       </div>
-    </div>
-    </form>
-</div>

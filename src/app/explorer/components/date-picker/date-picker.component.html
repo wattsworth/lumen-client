@@ -25,12 +25,14 @@
   </div>
   <div class="row">
     <div class="offset-md-4 col-md-4 mt-2">
-      <div class="text-danger range-error"
-        *ngIf="invalidRange">Invalid Time Range</div>
+      @if (invalidRange) {
+        <div class="text-danger range-error"
+        >Invalid Time Range</div>
+      }
       <button class="btn btn-primary btn-block btn-lg"
-        (click)="setRange()">Set Plot Time</button>
+      (click)="setRange()">Set Plot Time</button>
       <button class="btn btn-secondary btn-block"
-        (click)="cancel()">Cancel</button>
+      (click)="cancel()">Cancel</button>
     </div>
   </div>
 </div>
