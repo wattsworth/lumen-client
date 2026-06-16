@@ -72,6 +72,11 @@ export const reducer = createReducer(
       }
       return {...state, eventsSet: newEventsSet}
     }),
+    //remove all events from the specified stream from the selection
+    on(actions.removeEventStream, (state: IState, {eventStream}) => {
+      const {[eventStream.id]: removed, ...remaining}  = state.eventsSet;
+      return {...state, eventsSet: remaining}
+    }),
     //clear the selection
     on(actions.clearSelection, (state: IState) => ({...state, eventsSet: {}}))
     );

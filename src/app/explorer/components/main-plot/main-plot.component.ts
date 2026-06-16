@@ -59,8 +59,6 @@ export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
   //isn't drawn yet
   private storedPlotTimeRange: IRange;
 
-  //keep track of currently displayed events so they can be (de)selected
-  private displayedEventsSet: IEventsSet;
   
   constructor(
     private plotSelectors: PlotSelectors,
@@ -79,7 +77,6 @@ export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
     this.flot_options = _.cloneDeep(FLOT_OPTIONS);
     this.subs = [];
     this.storedPlotTimeRange = { min: null, max: null }
-    this.displayedEventsSet = {};
   }
 
   ngOnInit(
@@ -399,16 +396,19 @@ export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /* listen for plot selections (range) */
     this.subs.push(this.plotIntervalSelection.pipe(
-      withLatestFrom(this.eventSelectorSelectors.enabled$))
-      .subscribe( ([range, enabled]) => {
+      withLatestFrom(this.eventSelectorSelectors.enabled$,
+        this.plotSelectors.eventStreams$, // the currently displayed event streams
+        this.plotSelectors.plotEventData$, // *all* of the downloaded event data (from both displayed and not displayed streams)
+      ))
+      .subscribe( ([range, enabled, displayedEventStreams, plotEventData]) => {
       if(enabled){
         //figure out what events are inside this range
         //create a filtered IEventsSet object with just these
         //events
-        let selectedEvents = Object.keys(this.displayedEventsSet)
+        let selectedEvents = Object.keys(displayedEventStreams)
           .reduce((eventsSet: IEventsSet, id)=>{
-            eventsSet[id] = {...this.displayedEventsSet[id]}
-            eventsSet[id].events = this.displayedEventsSet[id].events
+            eventsSet[id] = {...plotEventData[id]} //copy all of the IEventsSet data
+            eventsSet[id].events = plotEventData[id].events //replace the events property with a subset of just the selected events
               .filter(event => event.end_time>range.min && event.start_time<range.max)
             return eventsSet;
             }, {} as IEventsSet)
@@ -450,8 +450,6 @@ export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
           .buildDataset(elementsByAxis.right, data, 2, showEnvelope);
         let eventData = this.plotService
           .buildEventDataset(eventStreams, eventsSet, selectedEventsSet)
-        //store event data to use with event selector tools
-        this.displayedEventsSet = eventsSet;
         let dataset = [...leftAxis, ...rightAxis, ...eventData]
         if (dataset.length == 0) {
           this.plotService.hidePlot();

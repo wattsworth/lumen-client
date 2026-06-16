@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as EventSelectorActions from '../store/event-selector/actions';
 import * as MeasurementActions from '../store/measurement/actions';
 import * as AnnotationActions from '../store/annotations/actions'
-import { IEventsSet } from 'src/app/store/data';
+import { IEventsSet, IEventStream } from 'src/app/store/data';
 @Injectable()
 export class EventSelectorService {
 
@@ -39,6 +39,11 @@ export class EventSelectorService {
     this.store.dispatch(EventSelectorActions.removeEvents({eventsSet}));
   }
 
+  //remove all the events from the specified EventStream
+  //
+  public removeEventStream(eventStream: IEventStream){
+    this.store.dispatch(EventSelectorActions.removeEventStream({eventStream}))
+  }
   //clear selection
   //
   public clearEventSelection(){

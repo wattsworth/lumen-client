@@ -23,6 +23,7 @@ import {
 } from '../../services';
 import { data_, explorer_UI_ } from '../../selectors';
 import { Dictionary } from '@ngrx/entity';
+import { EventSelectorService } from './event-selector.service';
 
 
 @Injectable()
@@ -33,7 +34,8 @@ export class PlotService {
     private messageService: MessageService,
     private dataService: DataService,
     private elementService: DbElementService,
-    private eventStreamService: EventStreamService
+    private eventStreamService: EventStreamService,
+    private eventSelectorService: EventSelectorService
   ) { }
 
   // add element to specified axis
@@ -61,6 +63,8 @@ export class PlotService {
     //if this is a duplicate event stream it has to be removed from the 
     //event stream store as well (otherwise it will just be pushed back in by main_plot.ts)
     this.eventStreamService.deduplicateEventStream(stream);
+    //remove any selected events from this stream
+    this.eventSelectorService.removeEventStream(stream);
     this.store.dispatch(PlotActions.hideEvents({id: stream.id}));
   }
   public hideEventsAndDuplicates(stream: IEventStream){
