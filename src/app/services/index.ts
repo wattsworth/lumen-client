@@ -14,7 +14,8 @@ import {
   ColorService,
   DbElementService,
   AnnotationService,
-  EventStreamService
+  EventStreamService,
+  JouleService
 } from './api';
 
 import {
@@ -25,9 +26,9 @@ export const SERVICE_PROVIDERS =
   [NilmService, DbFolderService, MessageService, DataViewService,
     DbStreamService, SessionService,DataService, ColorService,
     PermissionService, UserGroupService, UserService, DbElementService,
-    AnnotationService, EventStreamService];
+    AnnotationService, EventStreamService, JouleService];
 export {
   NilmService, DbFolderService, DbStreamService, SessionService,
   DataService, MessageService, PermissionService, UserGroupService, UserService,
-  ColorService, DbElementService, DataViewService, AnnotationService, EventStreamService
+  ColorService, DbElementService, DataViewService, AnnotationService, EventStreamService, JouleService
 };

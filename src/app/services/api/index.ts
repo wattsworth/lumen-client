@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 import { ColorService } from './color.service';
 import { AnnotationService } from './annotation.service';
 import { EventStreamService } from './event-stream.service';
-
+import { JouleService } from './joule-service';
 export {
   NilmService,
   DbFolderService,
@@ -25,5 +25,6 @@ export {
   UserService,
   ColorService,
   AnnotationService,
-  EventStreamService
+  EventStreamService,
+  JouleService
 }

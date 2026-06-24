@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
 import { Observable, EMPTY } from 'rxjs';
 import { tap, map, share, take } from 'rxjs/operators';
-import { compressToEncodedURIComponent } from 'lz-string';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import { normalize } from 'normalizr';
 import * as _ from 'lodash-es';
 import * as schema from '../../api';
@@ -32,6 +32,7 @@ import { defaultDataView,
 } from '../../store/data/initial-state';
 import { dbElements_, dbStreams_, eventStreams_, plot_UI_Ex_ } from '../../selectors';
 import { Dictionary } from '@ngrx/entity';
+import { JouleService } from './joule-service';
 
 export const MAX_SAVE_DATA_LENGTH = 200;
 
@@ -49,7 +50,8 @@ export class DataViewService {
     private elementService: DbElementService,
     private streamService: DbStreamService,
     private colorService: ColorService,
-    private eventStreamService: EventStreamService
+    private eventStreamService: EventStreamService,
+    private jouleService: JouleService
   ) {
     this.dataViewsLoaded = false;
   }
@@ -322,6 +324,16 @@ export class DataViewService {
       stream_ids: stream_ids,
       event_stream_ids: event_stream_ids
     }
+  }
+
+  public loadViewFromURLQuery(raw_query: string){
+    //given the string value of the 'view' query parameter, unpack and build a data structure
+    //that can be used to populate the explorer state model
+    let q = JSON.parse(decompressFromEncodedURIComponent(raw_query))
+   
+    //////////////////////////////
+    //retrieve the data and event streams and folders based on their Joule ID's 
+    this.jouleService.loadObjects(q);
   }
 
   public decimateDataset(dataset: IData) {

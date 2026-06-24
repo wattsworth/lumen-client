@@ -29,10 +29,10 @@ export class DbFolderService {
     let o = this.http
       .get(`db_folders/${dbFolderId}.json`, {})
       .pipe(share());
-
-    o.subscribe(
-      json => this._dispatch(json),
-      error => this.messageService.setErrorsFromAPICall(error));
+    o.subscribe({
+      next: (json) => this._dispatch(json),
+      error: (error) => this.messageService.setErrorsFromAPICall(error)
+    });
     
       return o; //for other subscribers
   }
@@ -40,12 +40,13 @@ export class DbFolderService {
   public updateFolder(dbFolder: IDbFolder): void {
     this.http
       .put<schema.IApiResponse>(`db_folders/${dbFolder.id}.json`, dbFolder)
-      .subscribe(
-        json => {
+      .subscribe({
+        next: (json) => {
           this._dispatch(json.data);
           this.messageService.setMessages(json.messages);
         },
-        error => this.messageService.setErrorsFromAPICall(error));  
+        error: (error) => this.messageService.setErrorsFromAPICall(error)
+      });  
   }
 
   // -------- private helper functions --------

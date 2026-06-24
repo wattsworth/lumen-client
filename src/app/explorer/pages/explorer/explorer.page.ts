@@ -33,6 +33,7 @@ import {
 } from '../../../store/data';
 
 import { MainPlotComponent } from '../../components/main-plot/main-plot.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     animations: [
@@ -84,7 +85,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit, OnDestroy {
     public dbStreamService: DbStreamService,
     public interfacesSelectors: InterfacesSelectors,
     public interfacesService: InterfacesService,
-    public sessionService: SessionService
+    public sessionService: SessionService,
+    public route: ActivatedRoute,
+    public router: Router
   ) {
     this.helpUrl = environment.helpUrl;
     
@@ -160,8 +163,20 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit, OnDestroy {
       }));
   }
   ngOnInit() {
-    this.dataViewService.restoreHomeDataView();
-
+    const viewValue = this.route.snapshot.queryParamMap.get('view');
+    //check whether a view has been requested via the URL
+    if (viewValue) {
+      this.dataViewService.loadViewFromURLQuery(viewValue)
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { view: null }, // Setting it to null removes it from the URL
+        queryParamsHandling: 'merge', // Keeps any other existing query params intact
+        replaceUrl: true // Replaces the current history entry so the back button doesn't loop
+      });
+    } else {
+      //check whether a default view should be loaded
+      this.dataViewService.restoreHomeDataView();
+    }
   }
 
   ngOnDestroy(){
