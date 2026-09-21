@@ -62,7 +62,7 @@ export class JouleService {
     //configure the event streams
     //The object_map has the link between Joule ID and (Lumen) ID {id: X, joule_id: Y}
     let api_id = (joule_id: number) => object_map.event_streams.find(x=>x.joule_id==joule_id).id
-
+    let displayed_event_stream_ids:Array<string> = []
     let configured_event_streams = event_streams.reduce((acc: Array<IEventStream>,event_stream) => {
       //check if this event stream has one or more configurations
       let configs = config_data.event_streams.filter(event_config => api_id(event_config.id).toString()==event_stream.id)
@@ -137,6 +137,7 @@ export class JouleService {
         }
         return new_event_stream;
       })
+      displayed_event_stream_ids.push(...event_stream_copies.map(e=>e.id))
       return [...acc, ...event_stream_copies]
     }, []);
     this.store.dispatch(actions.receiveEventStream({streams: configured_event_streams}))
@@ -220,11 +221,9 @@ export class JouleService {
       right_elements: rightElements,
       left_units: leftUnits,
       right_units: rightUnits,
-      event_streams: object_map.event_streams.map(event_stream => event_stream.id.toString()),
+      event_streams: displayed_event_stream_ids, //object_map.event_streams.map(event_stream => event_stream.id.toString()),
       show_plot: true
     }
-
-            
     this.store.dispatch(plotActions.restoreDataView({saved_state: plotState}))
   }
 }
