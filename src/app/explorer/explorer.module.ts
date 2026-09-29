@@ -56,7 +56,8 @@ import {
   faEquals,
   faNotEqual,
   faMinus,
-  faCheck
+  faCheck,
+  faCopy
 } from '@fortawesome/free-solid-svg-icons'
 import{
   faCircle as farCircle
@@ -173,6 +174,7 @@ export class ExplorerModule {
       faEquals,
       faNotEqual,
       faMinus,
-      faCheck);
+      faCheck,
+      faCopy);
   }
  }

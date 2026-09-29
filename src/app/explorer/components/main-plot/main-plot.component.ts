@@ -397,15 +397,15 @@ export class MainPlotComponent implements OnInit, AfterViewInit, OnDestroy {
     /* listen for plot selections (range) */
     this.subs.push(this.plotIntervalSelection.pipe(
       withLatestFrom(this.eventSelectorSelectors.enabled$,
-        this.plotSelectors.eventStreams$, // the currently displayed event streams
+        this.plotSelectors.plottedEventStreamIDs$, // the currently displayed event streams
         this.plotSelectors.plotEventData$, // *all* of the downloaded event data (from both displayed and not displayed streams)
       ))
-      .subscribe( ([range, enabled, displayedEventStreams, plotEventData]) => {
+      .subscribe( ([range, enabled, displayedEventStreamIDs, plotEventData]) => {
       if(enabled){
         //figure out what events are inside this range
         //create a filtered IEventsSet object with just these
         //events
-        let selectedEvents = Object.keys(displayedEventStreams)
+        let selectedEvents = displayedEventStreamIDs
           .reduce((eventsSet: IEventsSet, id)=>{
             eventsSet[id] = {...plotEventData[id]} //copy all of the IEventsSet data
             eventsSet[id].events = plotEventData[id].events //replace the events property with a subset of just the selected events

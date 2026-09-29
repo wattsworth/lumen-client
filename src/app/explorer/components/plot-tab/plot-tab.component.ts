@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Clipboard } from '@angular/cdk/clipboard'; //
+
 import * as _ from 'lodash-es';
 
 import { PlotSelectors } from '../../selectors/plot.selectors';
@@ -61,6 +63,7 @@ export class PlotTabComponent implements OnInit, OnDestroy {
     public eventSelectorSelectors: EventSelectorSelectors,
     public eventSelectorService: EventSelectorService,
     public messageService: MessageService,
+    private clipboard: Clipboard,
     private fb: FormBuilder
   ) {
     this.subs = [];
@@ -130,12 +133,41 @@ export class PlotTabComponent implements OnInit, OnDestroy {
     this.annotationService.deleteAnnotation(this.selectedAnnotation);
     this.annotationModal.hide();
   }
+  /* Download selected events as JSON formated text */
   public downloadEvents(eventsSet: IEventsSet, eventStreams: Dictionary<IEventStream>, nilms: Dictionary<INilm>){
+    const event_json = this.createEventJSON(eventsSet, eventStreams, nilms)
+    if(event_json.length==0){
+      return //nothing to download
+    }
+    //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+    var element = document.createElement('a');
+
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(event_json));
+    element.setAttribute('download', 'events.txt');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+  /* Copy selected events as JSON formated text */
+  public copyEvents(eventsSet: IEventsSet, eventStreams: Dictionary<IEventStream>, nilms: Dictionary<INilm>){
+    const event_json = this.createEventJSON(eventsSet, eventStreams, nilms)
+    if(event_json.length==0){
+      return //nothing to copy
+    }
+    this.clipboard.copy(event_json)
+    this.messageService.setNotice('Selected Events Copied')
+  }
+  /* Common function to turn selected events into a JSON string */
+  private createEventJSON(eventsSet: IEventsSet, eventStreams: Dictionary<IEventStream>, nilms: Dictionary<INilm>){
     if(Object.keys(eventsSet).length==0){
       this.messageService.setWarning("No Events Selected");
-      return;
+      return '';
     }
-    let event_data: any[] = Object.keys(eventsSet).reduce((event_data: any[], id)=>{
+    let eventData = Object.keys(eventsSet).reduce((event_data: any[], id)=>{
       let stream = eventStreams[id]
       let nilm = nilms[stream.nilm_id]
       event_data.push({
@@ -146,19 +178,13 @@ export class PlotTabComponent implements OnInit, OnDestroy {
         selection: eventsSet[id]
       })
       return event_data}, [])
+    if(eventData.length==0){
+      this.messageService.setWarning("No Events Selected");
+      return ''
+    }
+    return JSON.stringify(eventData, null, 2);
 
-    //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
-    var element = document.createElement('a');
-    let event_json = JSON.stringify(event_data, null, 2);
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(event_json));
-    element.setAttribute('download', 'events.txt');
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
   }
 }
 
