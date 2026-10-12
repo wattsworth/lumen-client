@@ -163,6 +163,7 @@ export class JouleService {
         element.color = this.colorService.requestColor();
       } else {
         element.color = config.color;
+        this.colorService.checkoutColor(element.color)
       }
       return element;
     });
